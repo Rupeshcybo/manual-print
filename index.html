@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Solar Label - Saatvik Solar Industries</title>
+    <title>Dynamic Solar Label - Mixed Watt Support</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
@@ -11,74 +11,42 @@
 
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f0f2f5; -webkit-print-color-adjust: exact; }
-
-        .page-container {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 20px auto;
-            background: white;
-            padding: 8mm;
-            box-sizing: border-box;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            border: 1px solid black;
-        }
-
-        /* Header (Strict Layout) */
+        .page-container { width: 210mm; min-height: 297mm; margin: 20px auto; background: white; padding: 8mm; box-sizing: border-box; box-shadow: 0 0 10px rgba(0,0,0,0.2); display: flex; flex-direction: column; border: 1px solid black; }
         .strict-header-wrapper { border: 2px solid black; padding: 10px; margin-bottom: 8px; }
-        
-        .header-top { 
-            display: grid; 
-            grid-template-columns: 220px 1fr 250px; 
-            align-items: center; 
-            padding-bottom: 10px;
-        }
-
+        .header-top { display: grid; grid-template-columns: 220px 1fr 250px; align-items: center; padding-bottom: 10px; }
         .logo-block { display: flex; flex-direction: column; align-items: flex-start; justify-content: center;}
         .navbar-brand img { max-width: 200px; max-height: 65px; display: block; }
-        /* Tagline CSS removed */
-
         .hu-box { font-size: 22px; font-weight: bold; border: 3px solid black; padding: 8px 12px; text-align: center; }
-        
         .company-contact { text-align: right; font-size: 11px; line-height: 1.4; }
         .company-contact strong { font-size: 13px; color: #d32f2f; }
+        .header-bottom { display: grid; grid-template-columns: 2fr 1fr 2.5fr; border-top: 1px solid black; margin-top: 8px; padding-top: 10px; font-size: 12px; font-weight: bold; align-items: center; }
         
-        .header-bottom { 
-            display: grid; grid-template-columns: 2fr 1fr 2fr; border-top: 1px solid black; 
-            margin-top: 8px; padding-top: 10px; font-size: 13px; font-weight: bold; 
-        }
-
         /* Tables Wrapper */
         .tables-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 5px; }
         table { border-collapse: collapse; width: 100%; font-size: 10px; table-layout: fixed; }
         th, td { border: 1px solid black; padding: 2px 4px; text-align: center; height: 32px; overflow: hidden; }
         th { background: #f2f2f2; text-transform: uppercase; font-size: 9px; }
-
-        /* Dynamic Hiding */
         .row-hidden { display: none; }
 
-        /* Footer (Signatures) */
+        /* Sync Button Styling */
+        .sync-btn { background: #3498db; color: white; border: none; font-size: 9px; padding: 2px 5px; cursor: pointer; border-radius: 3px; margin-left: 5px; vertical-align: middle; }
+
         .footer-strict { border-top: 2px solid black; margin-top: auto; padding: 15px 10px; display: grid; grid-template-columns: 1fr 150px; }
         .signatures-area { display: grid; grid-template-columns: 1fr 1fr; font-size: 14px; font-weight: bold; }
         .sign-placeholder { border-bottom: 2px solid black; width: 150px; display: inline-block; height: 20px; margin-top: 10px; }
-
         .right-codes { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         #final-barcode-graphic { width: 140px; height: 40px; }
         #final-qrcode { width: 80px; height: 80px; }
 
-        /* Navigation Buttons */
         .controls { position: fixed; bottom: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
         button { padding: 10px 15px; border: none; cursor: pointer; font-weight: bold; color: white; border-radius: 4px; transition: opacity 0.2s; }
-        button:hover { opacity: 0.8; }
         .btn-up { background: #8e44ad; }
         .btn-pr { background: #27ae60; }
         .btn-cl { background: #e67e22; }
 
         @media print {
-            body { background: white; }
+            .controls, .sync-btn { display: none !important; }
             .page-container { margin: 0; width: 100%; height: 100%; border: none; box-shadow: none; }
-            .controls { display: none !important; }
         }
     </style>
 </head>
@@ -88,13 +56,11 @@
     <div class="strict-header-wrapper">
         <div class="header-top">
             <div class="logo-block">
-                <a class="navbar-brand" href="https://saatvikgroup.com" target="_blank">
+                <a class="navbar-brand" href="https://saatvikgroup.com">
                     <img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" alt="Saatvik Solar Logo">
                 </a>
-                </div>
-
+            </div>
             <div class="hu-box" contenteditable="true" id="huNumber">HU NO.: 1000398761</div>
-
             <div class="company-contact">
                 <strong>Saatvik Solar Industries Pvt. Ltd.</strong><br>
                 info@saatvikgroup.com | www.saatvikgroup.com<br>
@@ -104,7 +70,10 @@
         <div class="header-bottom">
             <div contenteditable="true">Model No.: SGE590-144TGG</div>
             <div contenteditable="true" style="text-align: center;">Item Code: 9910000612</div>
-            <div contenteditable="true" style="text-align: right;">Item Des.: M590-VTL.16B1144TG2G</div>
+            <div style="text-align: right;">
+                <span contenteditable="true" id="itemDescription">Item Des.: M590-VTL.16B1144TG2G</span>
+                <button class="sync-btn" onclick="applyWattToAll()">Apply to All</button>
+            </div>
         </div>
     </div>
 
@@ -147,11 +116,22 @@
         updateFooterGraphics("1000398761");
     });
 
+    // Restore manual editability but add a "Sync All" function
+    function applyWattToAll() {
+        const descText = document.getElementById("itemDescription").innerText.trim();
+        const match = descText.match(/M(\d{3})/i);
+        if (match) {
+            const val = match[1];
+            document.querySelectorAll(".watt-cell").forEach(cell => cell.innerText = val);
+        } else {
+            alert("No 3-digit watt found in description (e.g., M590)");
+        }
+    }
+
     function initRows() {
         const t1 = document.getElementById("tbody1");
         const t2 = document.getElementById("tbody2");
         t1.innerHTML = ""; t2.innerHTML = "";
-
         for (let i = 1; i <= MAX_ROWS; i++) {
             const row = document.createElement("tr");
             row.id = `row-${i}`;
@@ -165,7 +145,6 @@
             if (i <= SPLIT_POINT) t1.appendChild(row); 
             else t2.appendChild(row);
         }
-        // Show row 1 by default for manual entry
         document.getElementById("row-1").className = "";
     }
 
@@ -176,15 +155,12 @@
             const workbook = XLSX.read(data, {type: 'array'});
             const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header:1});
             const serials = rows.flat().filter(s => s && String(s).trim().length > 5);
-            
-            clearAll(); // Clean before filling
-
+            clearAll(); 
             serials.forEach((serial, index) => {
                 if (index < MAX_ROWS) {
                     const rowNum = index + 1;
                     const row = document.getElementById(`row-${rowNum}`);
                     const serialCell = row.querySelector(".serial-cell");
-                    
                     serialCell.innerText = serial;
                     row.className = "";
                     genBarcode(serialCell);
@@ -197,18 +173,10 @@
     function manualEntry(id) {
         const row = document.getElementById(`row-${id}`);
         const serial = row.querySelector(".serial-cell").innerText.trim();
-        
-        if (serial === "") {
-            // Keep row visible but clear barcode
-            row.querySelector(".barcode-cell").innerHTML = "";
-        } else {
+        if (serial !== "") {
             row.className = "";
             genBarcode(row.querySelector(".serial-cell"));
-            
-            // Show next row automatically if typing
-            if(id < MAX_ROWS) {
-                document.getElementById(`row-${id+1}`).className = "";
-            }
+            if(id < MAX_ROWS) document.getElementById(`row-${id+1}`).className = "";
         }
     }
 
@@ -217,9 +185,7 @@
         const cell = el.nextElementSibling;
         if (serial.length > 3) {
             cell.innerHTML = `<svg style="width:100%; height:25px;"></svg>`;
-            JsBarcode(cell.querySelector("svg"), serial, { 
-                format: "CODE128", width: 1.1, height: 25, displayValue: false, margin: 0 
-            });
+            JsBarcode(cell.querySelector("svg"), serial, { format: "CODE128", width: 1.1, height: 25, displayValue: false, margin: 0 });
         }
     }
 
@@ -232,9 +198,7 @@
 
     function updateFooterGraphics(huNumber) {
         if(!huNumber) return;
-        JsBarcode("#final-barcode-graphic", huNumber, { 
-            format: "CODE128", width: 1.2, height: 35, displayValue: false, margin: 0 
-        });
+        JsBarcode("#final-barcode-graphic", huNumber, { format: "CODE128", width: 1.2, height: 35, displayValue: false, margin: 0 });
         const qrCell = document.getElementById("final-qrcode");
         qrCell.innerHTML = "";
         new QRCode(qrCell, { text: huNumber, width: 80, height: 80 });
