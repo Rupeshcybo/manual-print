@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Fixed Row Solar Label - Auto Watt</title>
+    <title>Saatvik Solar Label - Paste & Fixed Grid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 
@@ -50,72 +49,55 @@
             align-items: start;
         }
 
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
-            font-size: 10px; 
-            table-layout: fixed; 
-            border: 1px solid black; 
-        }
-        
-        th, td { 
-            border: 1px solid black; 
-            padding: 2px 4px; 
-            text-align: center; 
-            height: 33px; 
-            box-sizing: border-box;
-            overflow: hidden; 
-        }
-        
+        table { border-collapse: collapse; width: 100%; font-size: 10px; table-layout: fixed; border: 1px solid black; }
+        th, td { border: 1px solid black; padding: 2px 4px; text-align: center; height: 33px; box-sizing: border-box; overflow: hidden; }
         th { background: #f2f2f2; text-transform: uppercase; font-size: 9px; height: 30px; }
 
-        #table-left .row-empty .sn-cell, 
-        #table-left .row-empty .watt-cell { 
-            visibility: hidden; 
-        }
+        /* Left side fixed boxes */
+        #table-left .row-empty .sn-cell, #table-left .row-empty .watt-cell { visibility: hidden; }
+        /* Right side hidden if empty */
+        #table-right tr.row-hidden { display: none; }
 
-        #table-right tr.row-hidden {
-            display: none;
-        }
-
-        .barcode-cell svg {
-            width: 100%;
-            height: 25px;
-            display: block;
-        }
+        .barcode-cell svg { width: 100%; height: 25px; display: block; }
 
         .footer-strict { border-top: 2px solid black; margin-top: auto; padding: 15px 10px; display: grid; grid-template-columns: 1fr 150px; }
         .signatures-area { display: grid; grid-template-columns: 1fr 1fr; font-size: 14px; font-weight: bold; }
         .sign-placeholder { border-bottom: 2px solid black; width: 150px; display: inline-block; height: 20px; margin-top: 10px; }
-        .right-codes { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        #final-barcode-graphic { width: 140px; height: 40px; }
-        #final-qrcode { width: 80px; height: 80px; }
+        
+        /* Modal for Pasting */
+        #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2000; width: 300px; }
+        #pasteModal textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
 
         .controls { position: fixed; bottom: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
         button { padding: 10px 15px; border: none; cursor: pointer; font-weight: bold; color: white; border-radius: 4px; }
-        .btn-up { background: #8e44ad; }
+        .btn-paste { background: #3498db; }
         .btn-pr { background: #27ae60; }
         .btn-cl { background: #e67e22; }
 
         @media print {
-            .controls { display: none !important; }
+            .controls, #pasteModal { display: none !important; }
             .page-container { margin: 0; width: 100%; height: 100%; border: none; box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
+<div id="pasteModal">
+    <h3>Paste Serials from Excel</h3>
+    <textarea id="serialInput" placeholder="Paste serial numbers here (one per line)..."></textarea>
+    <div class="modal-btns">
+        <button style="background:#7f8c8d" onclick="toggleModal(false)">Cancel</button>
+        <button style="background:#2ecc71" onclick="processPastedSerials()">OK</button>
+    </div>
+</div>
+
 <div class="page-container">
     <div class="strict-header-wrapper">
         <div class="header-top">
-            <div class="logo-block">
-                <img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" alt="Saatvik Solar Logo">
-            </div>
+            <div class="logo-block"><img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" alt="Saatvik Solar Logo"></div>
             <div class="hu-box" contenteditable="true" id="huNumber">HU NO.: 1000398761</div>
-            <div class="company-contact">
-                <strong>Saatvik Solar Industries Pvt. Ltd.</strong><br>
-                info@saatvikgroup.com | Toll Free: 1800-1801-051
-            </div>
+            <div class="company-contact"><strong>Saatvik Solar Industries Pvt. Ltd.</strong><br>info@saatvikgroup.com | Toll Free: 1800-1801-051</div>
         </div>
         <div class="header-bottom">
             <div contenteditable="true">Model No.: SGE590-144TGG</div>
@@ -148,10 +130,9 @@
 </div>
 
 <div class="controls">
-    <button class="btn-up" onclick="document.getElementById('serialUpload').click()">Upload Excel</button>
+    <button class="btn-paste" onclick="toggleModal(true)">Paste Serials</button>
     <button class="btn-cl" onclick="clearAll()">Clear All</button>
     <button class="btn-pr" onclick="window.print()">Print Label</button>
-    <input type="file" id="serialUpload" accept=".xlsx,.xls" style="display:none" onchange="loadSerialExcel(event)">
 </div>
 
 <script>
@@ -160,14 +141,13 @@
     document.addEventListener("DOMContentLoaded", () => {
         initStaticGrid();
         updateFooterGraphics("1000398761");
-        extractWatt(); // Initial extract
+        extractWatt();
     });
 
     function initStaticGrid() {
         const left = document.getElementById("tbody-left");
         const right = document.getElementById("tbody-right");
         left.innerHTML = ""; right.innerHTML = "";
-
         for (let i = 1; i <= ROWS_PER_SIDE; i++) {
             left.appendChild(createStaticRow(i, true));
             right.appendChild(createStaticRow(i + ROWS_PER_SIDE, false));
@@ -178,24 +158,43 @@
         const tr = document.createElement("tr");
         tr.id = `row-${sn}`;
         tr.className = isLeft ? "row-empty" : "row-hidden";
-        tr.innerHTML = `
-            <td class="sn-cell">${sn}</td>
-            <td class="watt-cell" contenteditable="true"></td>
-            <td class="serial-cell" contenteditable="true" oninput="manualUpdate(this)"></td>
-            <td class="barcode-cell"></td>
-        `;
+        tr.innerHTML = `<td class="sn-cell">${sn}</td><td class="watt-cell" contenteditable="true"></td><td class="serial-cell" contenteditable="true" oninput="manualUpdate(this)"></td><td class="barcode-cell"></td>`;
         return tr;
     }
 
-    // Logic to find Watts from Description
+    function toggleModal(show) {
+        document.getElementById('pasteModal').style.display = show ? 'block' : 'none';
+        if(show) document.getElementById('serialInput').focus();
+    }
+
+    function processPastedSerials() {
+        const input = document.getElementById('serialInput').value;
+        const serials = input.split('\n').map(s => s.trim()).filter(s => s.length > 5);
+        fillTableWithArray(serials);
+        toggleModal(false);
+        document.getElementById('serialInput').value = "";
+    }
+
+    function fillTableWithArray(serials) {
+        clearAll();
+        extractWatt();
+        serials.forEach((serial, index) => {
+            const sn = index + 1;
+            if (sn <= 36) {
+                const row = document.getElementById(`row-${sn}`);
+                const cell = row.querySelector(".serial-cell");
+                cell.innerText = serial;
+                row.classList.remove("row-empty", "row-hidden");
+                renderBarcode(cell);
+            }
+        });
+    }
+
     function extractWatt() {
         const text = document.getElementById("itemDes").innerText;
-        const match = text.match(/\d{3}/); // Finds the first 3-digit number
+        const match = text.match(/\d{3}/);
         if (match) {
-            const wattValue = match[0];
-            document.querySelectorAll(".watt-cell").forEach(cell => {
-                cell.innerText = wattValue;
-            });
+            document.querySelectorAll(".watt-cell").forEach(cell => cell.innerText = match[0]);
         }
     }
 
@@ -211,39 +210,12 @@
         }
     }
 
-    function loadSerialExcel(event) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
-            const serials = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header:1})
-                            .flat().filter(s => s && String(s).trim().length > 5);
-            
-            clearAll(); 
-            extractWatt(); // Fill watts immediately after clearing
-
-            serials.forEach((serial, index) => {
-                const sn = index + 1;
-                if (sn <= 36) {
-                    const row = document.getElementById(`row-${sn}`);
-                    const cell = row.querySelector(".serial-cell");
-                    cell.innerText = serial;
-                    row.classList.remove("row-empty", "row-hidden");
-                    renderBarcode(cell);
-                }
-            });
-        };
-        reader.readAsArrayBuffer(event.target.files[0]);
-    }
-
     function renderBarcode(el) {
         const serial = el.innerText.trim();
         const barcodeCell = el.nextElementSibling;
         if (serial.length > 3) {
             barcodeCell.innerHTML = `<svg></svg>`;
-            JsBarcode(barcodeCell.querySelector("svg"), serial, { 
-                format: "CODE128", width: 1.0, height: 25, displayValue: false, margin: 0 
-            });
+            JsBarcode(barcodeCell.querySelector("svg"), serial, { format: "CODE128", width: 1.0, height: 25, displayValue: false, margin: 0 });
         }
     }
 
