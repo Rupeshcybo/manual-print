@@ -44,11 +44,29 @@ align-items:center;
 padding-bottom:10px;
 }
 
+/* LOGO */
+
+.logo-block{
+display:flex;
+flex-direction:column;
+width:210px;
+}
+
 .logo-block img{
 max-width:200px;
 max-height:65px;
 display:block;
 pointer-events:none;
+}
+
+.logo-tagline{
+font-size:1.3mm;
+letter-spacing:2px;
+margin-top:-12px;
+margin-left:31mm;
+font-weight:500;
+color:#111;
+white-space:nowrap;
 }
 
 .hu-box{
@@ -217,7 +235,7 @@ box-shadow:none;
 
 <div id="pasteModal">
 <h3>Paste Serials from Excel</h3>
-<textarea id="serialInput" placeholder="Paste serial numbers here (one per line)..."></textarea>
+<textarea id="serialInput"></textarea>
 <div class="modal-btns">
 <button style="background:#7f8c8d" onclick="toggleModal(false)">Cancel</button>
 <button style="background:#2ecc71" onclick="processPastedSerials()">OK</button>
@@ -230,11 +248,16 @@ box-shadow:none;
 
 <div class="header-top">
 
-<!-- NON CLICKABLE LOGO -->
 <div class="logo-block">
+
 <img src="https://press-release-v1-new.s3.ap-south-1.amazonaws.com/order/48669/1766471182760_content_img.png"
-alt="TANS"
+alt="Saatvik Logo"
 oncontextmenu="return false;">
+
+<div class="logo-tagline">
+FOR A BETTER FUTURE
+</div>
+
 </div>
 
 <div class="hu-box" contenteditable="true" id="huNumber">
@@ -319,10 +342,8 @@ extractWatt();
 function initStaticGrid(){
 const left=document.getElementById("tbody-left");
 const right=document.getElementById("tbody-right");
-
 left.innerHTML="";
 right.innerHTML="";
-
 for(let i=1;i<=ROWS_PER_SIDE;i++){
 left.appendChild(createStaticRow(i,true));
 right.appendChild(createStaticRow(i+ROWS_PER_SIDE,false));
@@ -330,135 +351,85 @@ right.appendChild(createStaticRow(i+ROWS_PER_SIDE,false));
 }
 
 function createStaticRow(sn,isLeft){
-
 const tr=document.createElement("tr");
 tr.id=`row-${sn}`;
 tr.className=isLeft?"row-empty":"row-hidden";
-
 tr.innerHTML=`
 <td class="sn-cell">${sn}</td>
 <td class="watt-cell" contenteditable="true"></td>
 <td class="serial-cell" contenteditable="true" oninput="manualUpdate(this)"></td>
-<td class="barcode-cell"></td>
-`;
-
+<td class="barcode-cell"></td>`;
 return tr;
 }
 
 function toggleModal(show){
 document.getElementById('pasteModal').style.display=show?'block':'none';
-if(show)document.getElementById('serialInput').focus();
 }
 
 function processPastedSerials(){
-
 const input=document.getElementById('serialInput').value;
-
 const serials=input.split('\n').map(s=>s.trim()).filter(s=>s.length>5);
-
 fillTableWithArray(serials);
-
 toggleModal(false);
-
 document.getElementById('serialInput').value="";
 }
 
 function fillTableWithArray(serials){
-
 clearAll();
-
 extractWatt();
-
 serials.forEach((serial,index)=>{
-
 const sn=index+1;
-
 if(sn<=36){
-
 const row=document.getElementById(`row-${sn}`);
-
 const cell=row.querySelector(".serial-cell");
-
 cell.innerText=serial;
-
 row.classList.remove("row-empty","row-hidden");
-
 renderBarcode(cell);
-
 }
-
 });
-
 }
 
 function extractWatt(){
-
 const text=document.getElementById("itemDes").innerText;
-
 const match=text.match(/\d{3}/);
-
 if(match){
-
 document.querySelectorAll(".watt-cell").forEach(cell=>cell.innerText=match[0]);
-
 }
-
 }
 
 function manualUpdate(el){
-
 const row=el.parentElement;
-
 if(el.innerText.trim().length>0){
-
 row.classList.remove("row-empty","row-hidden");
-
 renderBarcode(el);
-
 }else{
-
 const isLeft=row.closest('#table-left')!==null;
-
 row.className=isLeft?"row-empty":"row-hidden";
-
 row.querySelector(".barcode-cell").innerHTML="";
-
 }
-
 }
 
 function renderBarcode(el){
-
 const serial=el.innerText.trim();
-
 const barcodeCell=el.nextElementSibling;
-
 if(serial.length>3){
-
 barcodeCell.innerHTML=`<svg></svg>`;
-
 JsBarcode(barcodeCell.querySelector("svg"),serial,{
 format:"CODE128",
-width:1.0,
+width:1,
 height:25,
 displayValue:false,
 margin:0
 });
-
 }
-
 }
 
 function clearAll(){
-
 initStaticGrid();
-
 extractWatt();
-
 }
 
 function updateFooterGraphics(huNumber){
-
 JsBarcode("#final-barcode-graphic",huNumber,{
 format:"CODE128",
 width:1.2,
@@ -466,17 +437,9 @@ height:35,
 displayValue:false,
 margin:0
 });
-
 const qrCell=document.getElementById("final-qrcode");
-
 qrCell.innerHTML="";
-
-new QRCode(qrCell,{
-text:huNumber,
-width:80,
-height:80
-});
-
+new QRCode(qrCell,{text:huNumber,width:80,height:80});
 }
 
 document.getElementById("huNumber").addEventListener("input",function(){
