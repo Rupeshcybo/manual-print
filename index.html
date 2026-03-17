@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Saatvik Solar Official Label - Corner Alignment</title>
+    <title>Saatvik Solar - Fully Dynamic Rows</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -30,7 +30,7 @@
             margin-bottom: 10px;
         }
 
-        .logo-block { display: flex; flex-direction: column; position: relative; align-items: flex-start; }
+        .logo-block { display: flex; flex-direction: column; align-items: flex-start; }
         .main-logo { width: 160px; display: block; }
         
         .logo-tagline {
@@ -56,7 +56,9 @@
         th, td { border: 1px solid black; padding: 3px 2px; text-align: center; height: 24px; white-space: nowrap; }
         th { background: #f9f9f9; font-size: 9px; font-weight: bold; }
         
-        .dynamic-row.hidden { display: none; }
+        /* Dynamic Hiding */
+        tr.hidden { display: none; }
+        
         .serial-input, .watt-cell { font-weight: bold; font-family: monospace; font-size: 11px; outline: none; }
         .row-barcode { width: 130px; height: 20px; display: block; margin: 0 auto; }
 
@@ -66,10 +68,10 @@
 
         .signature-grid {
             display: flex;
-            justify-content: space-between; /* Pushes one to left and one to right */
+            justify-content: space-between;
             align-items: flex-end;
             width: 100%;
-            padding: 0 2mm; /* Tight distance to page edge */
+            padding: 0 2mm;
         }
         .sig-block { display: flex; flex-direction: column; align-items: center; }
         .packing-block { gap: 10px; }
@@ -110,8 +112,8 @@
 </div>
 
 <div id="pasteModal">
-    <h3>Paste Serials (1-36)</h3>
-    <textarea id="serialInput" placeholder="Paste one per line..."></textarea>
+    <h3>Paste Serials</h3>
+    <textarea id="serialInput" placeholder="Paste serials here (one per line)..."></textarea>
     <div style="display: flex; gap: 10px;">
         <button onclick="processSerials()" style="flex:1">Apply</button>
         <button onclick="document.getElementById('pasteModal').style.display='none'" style="background:#7f8c8d">Close</button>
@@ -184,12 +186,12 @@
         for(let i=1; i<=36; i++) {
             const tr = document.createElement('tr');
             tr.id = `row-${i}`;
-            if(i > 18) tr.className = 'dynamic-row hidden';
+            tr.className = 'hidden'; // Initially hidden
             
             tr.innerHTML = `
                 <td>${i.toString().padStart(2, '0')}</td>
                 <td contenteditable="true" class="watt-cell" oninput="this.dataset.modified='true'">---</td>
-                <td contenteditable="true" class="serial-input" oninput="manualCheck(this)"></td>
+                <td contenteditable="true" class="serial-input" oninput="updateWeightCount()"></td>
                 <td class="bc-target"></td>
             `;
             if(i <= 18) left.appendChild(tr);
@@ -197,6 +199,34 @@
         }
         autoUpdateWattsFromDes();
         updateHUCode();
+        updateWeightCount();
+    }
+
+    function processSerials() {
+        const input = document.getElementById('serialInput').value;
+        const serials = input.split('\n').map(s => s.trim()).filter(s => s.length > 2);
+        
+        // Reset all rows to hidden and clear content first
+        for(let i=1; i<=36; i++) {
+            const row = document.getElementById(`row-${i}`);
+            row.className = 'hidden';
+            row.querySelector('.serial-input').innerText = '';
+            row.querySelector('.bc-target').innerHTML = '';
+        }
+
+        // Show only the needed rows
+        serials.forEach((s, i) => {
+            const sn = i + 1;
+            if(sn <= 36) {
+                const row = document.getElementById(`row-${sn}`);
+                row.classList.remove('hidden');
+                const inputCell = row.querySelector('.serial-input');
+                inputCell.innerText = s;
+                renderBarcode(inputCell);
+            }
+        });
+
+        document.getElementById('pasteModal').style.display='none';
         updateWeightCount();
     }
 
@@ -212,41 +242,10 @@
         }
     }
 
-    function manualCheck(el) {
-        const row = el.closest('tr');
-        const val = el.innerText.trim();
-        const sn = parseInt(row.id.split('-')[1]);
-        if(val.length > 0) {
-            row.classList.remove('hidden');
-            renderBarcode(el);
-        } else if (sn > 18) {
-            row.classList.add('hidden');
-        }
-        updateWeightCount();
-    }
-
-    function processSerials() {
-        const input = document.getElementById('serialInput').value;
-        const serials = input.split('\n').map(s => s.trim()).filter(s => s.length > 2);
-        clearAll();
-        serials.forEach((s, i) => {
-            const sn = i + 1;
-            if(sn <= 36) {
-                const row = document.getElementById(`row-${sn}`);
-                const inputCell = row.querySelector('.serial-input');
-                row.classList.remove('hidden');
-                inputCell.innerText = s;
-                renderBarcode(inputCell);
-            }
-        });
-        document.getElementById('pasteModal').style.display='none';
-        updateWeightCount();
-    }
-
     function updateWeightCount() {
-        const inputs = document.querySelectorAll('.serial-input');
+        const rows = document.querySelectorAll('tr:not(.hidden) .serial-input');
         let count = 0;
-        inputs.forEach(input => {
+        rows.forEach(input => {
             if(input.innerText.trim().length > 0) count++;
         });
         document.getElementById('net-weight-val').innerText = (count > 0) ? count : "";
@@ -258,7 +257,7 @@
         if(val) {
             target.innerHTML = '<svg class="row-barcode"></svg>';
             JsBarcode(target.querySelector('svg'), val, { format: "CODE128", width: 1, height: 20, displayValue: false, margin: 0 });
-        } else { target.innerHTML = ''; }
+        }
     }
 
     function updateHUCode() {
@@ -276,7 +275,7 @@
         });
     }
 
-    function clearAll() { generateGrid(); }
+    function clearAll() { generateGrid(); document.getElementById('serialInput').value = ''; }
     document.getElementById('hu-val').addEventListener('input', updateHUCode);
     generateGrid();
 </script>
