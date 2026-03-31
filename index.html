@@ -55,17 +55,42 @@
         /* --- Product Info --- */
         .product-meta {
             font-family: "Times New Roman", Times, serif;
-            font-size: 16px; font-weight: bold; line-height: 1.5;
-            margin-bottom: 10px; border-bottom: 1.5px solid #000; padding-bottom: 5px;
+            font-size: 14.5px; font-weight: bold; line-height: 1.5;
+            margin-bottom: 10px;
         }
 
-        /* --- Original Table Logic --- */
+        /* --- Table Layout --- */
         .tables-wrapper { display: flex; gap: 12px; align-items: flex-start; }
         table { border-collapse: collapse; width: 50%; font-size: 10px; }
         th, td { border: 1px solid black; padding: 3px 2px; text-align: center; height: 24px; }
         tr.hidden { display: none; }
+
+        /* Updated: S No., Watts, Serial No. columns - Times New Roman, 13.5px, not bold */
+        td:nth-child(1),
+        td:nth-child(2),
+        td:nth-child(3) {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13.5px;
+            font-weight: normal;
+        }
+
+        /* Keep barcode column default */
+        td:nth-child(4) {
+            font-size: 10px;
+        }
         
-        .serial-input, .watt-cell { font-weight: bold; font-family: monospace; font-size: 11px; outline: none; }
+        .serial-input { 
+            font-family: "Times New Roman", Times, serif; 
+            font-size: 13.5px; 
+            font-weight: normal; 
+            outline: none; 
+        }
+        .watt-cell { 
+            font-family: "Times New Roman", Times, serif; 
+            font-size: 13.5px; 
+            font-weight: normal; 
+            outline: none; 
+        }
         .row-barcode { width: 130px; height: 20px; display: block; margin: 0 auto; }
 
         /* --- Footer --- */
@@ -118,7 +143,7 @@
     <div class="product-meta">
         <div contenteditable="true">Model No.: SGE625-132TGG</div>
         <div contenteditable="true">Item Code: 9910000441</div>
-        <div contenteditable="true" id="itemDes" oninput="autoUpdateWatts()">Item Des: M625-S&W.16B1132TG2G-2382*1134-96-35-1.4</div>
+        <div contenteditable="true" id="itemDes" oninput="autoUpdateWatts()">Item Des: M625-S&amp;W.16B1132TG2G-2382*1134-96-35-1.4</div>
     </div>
 
     <div class="tables-wrapper">
