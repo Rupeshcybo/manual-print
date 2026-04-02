@@ -43,35 +43,45 @@
             display: flex; flex-direction: column; align-items: center;
             font-family: "Times New Roman", Times, serif;
         }
-        
+
         .hu-text { 
-            font-size: 30px; font-weight: 900; margin-bottom: 2px;
-            white-space: nowrap; outline: none;
+            font-size: 30px; font-weight: 900; margin-bottom: 0px;
+            white-space: nowrap; outline: none; line-height: 1;
         }
-        
-        #hu-barcode-svg { width: 230px; height: 55px; }
+
+        #hu-barcode-svg { width: 230px; height: 55px; margin-top: -5px; }
         .contact-right { text-align: right; font-size: 10px; font-weight: bold; min-width: 160px; }
 
         /* --- Product Info --- */
         .product-meta {
-            font-family: "STKaiti", "Kaiti SC", "KaiTi", "楷体", serif;
-            font-size: 16px; font-weight: bold; line-height: 1.5;
-            margin-bottom: 10px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 22px;
+            font-weight: bold; 
+            line-height: 1.5;
+            margin-bottom: 8mm;  /* Changed from 10px to 8mm */
         }
 
         /* --- Table Layout --- */
         .tables-wrapper { 
             display: flex; 
-            gap: 8px; /* Slightly reduced gap to fit the wider tables */
+            gap: 8px;
             align-items: flex-start; 
             justify-content: space-between;
         }
         table { 
             border-collapse: collapse; 
-            width: 52%; /* Increased width by 2 points (percentage points) */
+            width: 52%; 
             font-size: 10px; 
         }
         th, td { border: 1px solid black; padding: 3px 2px; text-align: center; height: 24px; }
+
+        /* INCREASED width for S No column */
+        th:first-child,
+        td:first-child {
+            width: 50px;
+            min-width: 50px;
+        }
+
         tr.hidden { display: none; }
 
         td:nth-child(1),
@@ -85,7 +95,7 @@
         td:nth-child(4) {
             font-size: 10px;
         }
-        
+
         .serial-input { 
             font-family: "Times New Roman", Times, serif; 
             font-size: 13.5px; 
@@ -138,7 +148,7 @@
             <div class="logo-tagline">FOR A BETTER FUTURE</div>
         </div>
         <div class="hu-center-block">
-            <div class="hu-text" contenteditable="true" id="hu-val">Pallet No: X</div>
+            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUCode()">Pallet No: X</div>
             <svg id="hu-barcode-svg"></svg>
         </div>
         <div class="contact-right">
@@ -206,7 +216,7 @@
     function processSerials() {
         const input = document.getElementById('serialInput').value;
         const serials = input.split('\n').map(s => s.trim()).filter(s => s.length > 2);
-        
+
         for(let i=1; i<=36; i++) {
             const r = document.getElementById(`row-${i}`);
             r.className = 'hidden';
@@ -238,6 +248,12 @@
         }
     }
 
+    function clearAll() {
+        document.getElementById('serialInput').value = '';
+        generateGrid();
+        document.getElementById('net-weight-val').innerText = '';
+    }
+
     function updateHUCode() {
         const raw = document.getElementById('hu-val').innerText;
         const hu = raw.includes(':') ? raw.split(':').pop().trim() : raw.trim();
@@ -246,25 +262,18 @@
             JsBarcode("#footer-barcode-svg", hu, { format: "CODE128", height: 30, displayValue: false, width: 1 });
             const qrDiv = document.getElementById("qrcode");
             qrDiv.innerHTML = "";
-            
+
             // Generate a High Error Correction QR code so it looks denser, like the photo
-            new QRCode(qrDiv, { 
-                text: hu, 
-                width: 75, 
-                height: 75,
-                correctLevel : QRCode.CorrectLevel.H 
+            new QRCode(qrDiv, {
+                text: hu,
+                width: 45,
+                height: 45,
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
     }
 
-    function clearAll() {
-        document.getElementById('serialInput').value = '';
-        generateGrid();
-        document.getElementById('net-weight-val').innerText = '';
-    }
-
-    document.getElementById('hu-val').addEventListener('input', updateHUCode);
-    generateGrid();
+    window.onload = generateGrid;
 </script>
 </body>
 </html>
