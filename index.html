@@ -54,21 +54,23 @@
 
         /* --- Product Info --- */
         .product-meta {
-            font-family: "STKaiti", "Kaiti SC", "KaiTi", "楷体", serif;
-            font-size: 16px; font-weight: bold; line-height: 1.5;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 22px;
+            font-weight: bold; 
+            line-height: 1.5;
             margin-bottom: 10px;
         }
 
         /* --- Table Layout --- */
         .tables-wrapper { 
             display: flex; 
-            gap: 8px; /* Slightly reduced gap to fit the wider tables */
+            gap: 8px;
             align-items: flex-start; 
             justify-content: space-between;
         }
         table { 
             border-collapse: collapse; 
-            width: 52%; /* Increased width by 2 points (percentage points) */
+            width: 52%; 
             font-size: 10px; 
         }
         th, td { border: 1px solid black; padding: 3px 2px; text-align: center; height: 24px; }
@@ -238,6 +240,12 @@
         }
     }
 
+    function clearAll() {
+        document.getElementById('serialInput').value = '';
+        generateGrid();
+        document.getElementById('net-weight-val').innerText = '';
+    }
+
     function updateHUCode() {
         const raw = document.getElementById('hu-val').innerText;
         const hu = raw.includes(':') ? raw.split(':').pop().trim() : raw.trim();
@@ -248,23 +256,16 @@
             qrDiv.innerHTML = "";
             
             // Generate a High Error Correction QR code so it looks denser, like the photo
-            new QRCode(qrDiv, { 
-                text: hu, 
-                width: 75, 
-                height: 75,
-                correctLevel : QRCode.CorrectLevel.H 
+            new QRCode(qrDiv, {
+                text: hu,
+                width: 45,
+                height: 45,
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
     }
 
-    function clearAll() {
-        document.getElementById('serialInput').value = '';
-        generateGrid();
-        document.getElementById('net-weight-val').innerText = '';
-    }
-
-    document.getElementById('hu-val').addEventListener('input', updateHUCode);
-    generateGrid();
+    window.onload = generateGrid;
 </script>
 </body>
 </html>
