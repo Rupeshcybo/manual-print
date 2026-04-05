@@ -42,12 +42,12 @@
             display: flex; flex-direction: column; align-items: center;
             font-family: "Times New Roman", Times, serif;
         }
-        
+
         .hu-text { 
             font-size: 30px; font-weight: 900; margin-bottom: 2px;
             white-space: nowrap; outline: none;
         }
-        
+
         #hu-barcode-svg { width: 230px; height: 55px; display: block; margin: 0 auto; }
 
         .contact-right { 
@@ -57,7 +57,7 @@
             min-width: 200px;
             line-height: 1.4;
         }
-        
+
         .contact-right .company-name {
             font-size: 13px;
             font-weight: bold;
@@ -109,7 +109,7 @@
             padding: 0;
             padding-bottom: 1px;
         }
-        
+
         .serial-input, .watt-cell { 
             font-family: "Times New Roman", Times, serif; 
             font-size: 12px; 
@@ -125,7 +125,7 @@
         }
 
         .footer-area { margin-top: auto; width: 100%; padding-bottom: 10mm; }
-        
+
         .footer-align-row { 
             display: flex; 
             justify-content: space-between; 
@@ -133,21 +133,27 @@
             width: 100%; 
             padding: 0 5mm;
         }
-        
+
         .footer-left {
             display: flex;
             flex-direction: column;
             gap: 3px;
             align-items: flex-start;
         }
-        
+
+        .footer-left div {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
         .footer-center {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
         }
-        
+
         .barcode-qr-container {
             display: flex;
             align-items: center;
@@ -163,11 +169,13 @@
             padding-top: 3px; 
             text-align: center;
             margin-top: 3px;
+            font-family: "Times New Roman", Times, serif;
         }
-        
+
         .sig-label {
             font-size: 10px;
             text-align: center;
+            font-family: "Times New Roman", Times, serif;
         }
 
         #qrcode {
@@ -219,7 +227,7 @@
             <div class="logo-tagline">FOR A BETTER FUTURE</div>
         </div>
         <div class="hu-center-block">
-            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUBarcode()">Pallet No: 100000001</div>
+            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUBarcode()">P No.: 111100011</div>
             <svg id="hu-barcode-svg"></svg>
         </div>
         <div class="contact-right">
@@ -244,15 +252,15 @@
     <div class="footer-area">
         <div class="footer-align-row">
             <div class="footer-left">
-                <div><b>Net Weight: <span id="net-weight-val"></span></b></div>
-                <div><b>Gross Weight: <span contenteditable="true">---</span></b></div>
+                <div>Net Weight: <span id="net-weight-val"></span></div>
+                <div>Gross Weight: <span contenteditable="true">---</span></div>
             </div>
-            
+
             <div class="footer-center">
                 <div class="sig-line">Quality Incharge</div>
                 <div class="sig-label">Signature</div>
             </div>
-            
+
             <div class="footer-center">
                 <div class="barcode-qr-container">
                     <svg id="footer-barcode-svg"></svg>
@@ -279,7 +287,7 @@ function updateQRCodeAndWatts() {
 function autoUpdateWatts() {
     const itemDes = document.getElementById('itemDes').innerText;
     const watts = extractWatts(itemDes);
-    
+
     for (let i = 1; i <= 36; i++) {
         const row = document.getElementById(`row-${i}`);
         if (row && !row.classList.contains('hidden')) {
@@ -289,19 +297,16 @@ function autoUpdateWatts() {
     }
 }
 
-// ✅ FIXED: Generate QR Code immediately (not just after Apply)
 function updateQRCode() {
     const qrContainer = document.getElementById('qrcode');
-    
-    // Always clear and regenerate
     qrContainer.innerHTML = '';
-    
+
     const modelNo = document.getElementById('modelNo').innerText.replace('Model No.: ', '').trim();
     const itemCode = document.getElementById('itemCode').innerText.replace('Item Code: ', '').trim();
     const itemDes = document.getElementById('itemDes').innerText.replace('Item Des: ', '').trim();
-    
+
     const qrData = `${modelNo}|${itemCode}|${itemDes}`;
-    
+
     try {
         new QRCode(qrContainer, {
             text: qrData,
@@ -316,11 +321,17 @@ function updateQRCode() {
     }
 }
 
-function updateHUBarcode() {
+// FIXED: Extract only the number part after "Pallet No.:" for barcode
+function getHUValue() {
     const huText = document.getElementById('hu-val').innerText;
-    const huValue = huText.replace('Pallet No: ', '').trim();
-    
-    if (huValue && huValue !== 'X') {
+    // Remove "Pallet No.:" or "Pallet No:" and any extra spaces, keep only the number
+    return huText.replace(/Pallet No\.?:\s*/, '').trim();
+}
+
+function updateHUBarcode() {
+    const huValue = getHUValue();
+
+    if (huValue && huValue.length > 0) {
         try {
             JsBarcode("#hu-barcode-svg", huValue, {
                 format: "CODE128",
@@ -351,41 +362,36 @@ function generateFooterBarcode(text) {
     }
 }
 
-function getHUValue() {
-    const huText = document.getElementById('hu-val').innerText;
-    return huText.replace('Pallet No: ', '').trim();
-}
-
 function processSerials() {
     const input = document.getElementById('serialInput').value;
     const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
-    
+
     if (serials.length === 0) {
         alert('Please enter at least one serial number');
         return;
     }
-    
+
     clearAll(false);
-    
+
     const huValue = getHUValue();
     const qty = Math.min(serials.length, 36);
-    
+
     serials.forEach((serial, index) => {
         const rowNum = index + 1;
         if (rowNum > 36) return;
-        
+
         const row = document.getElementById(`row-${rowNum}`);
         if (row) {
             row.classList.remove('hidden');
-            
+
             const serialCell = row.querySelector('.serial-input');
             if (serialCell) serialCell.innerText = serial;
-            
+
             const itemDes = document.getElementById('itemDes').innerText;
             const watts = extractWatts(itemDes);
             const wattCell = row.querySelector('.watt-cell');
             if (wattCell) wattCell.innerText = watts;
-            
+
             const bcTarget = row.querySelector('.bc-target');
             if (bcTarget) {
                 bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
@@ -403,13 +409,13 @@ function processSerials() {
             }
         }
     });
-    
+
     document.getElementById('net-weight-val').innerText = qty;
-    
+
     updateHUBarcode();
-    updateQRCode(); // Update QR with current data
+    updateQRCode();
     generateFooterBarcode(huValue);
-    
+
     document.getElementById('pasteModal').style.display = 'none';
 }
 
@@ -421,17 +427,16 @@ function clearAll(hideModal = true) {
             const serialCell = row.querySelector('.serial-input');
             const wattCell = row.querySelector('.watt-cell');
             const bcTarget = row.querySelector('.bc-target');
-            
+
             if (serialCell) serialCell.innerText = '';
             if (wattCell) wattCell.innerText = '---';
             if (bcTarget) bcTarget.innerHTML = '';
         }
     }
-    
+
     document.getElementById('net-weight-val').innerText = '';
-    // Keep QR code visible even after clear
     document.getElementById('footer-barcode-svg').innerHTML = '';
-    
+
     if (hideModal) document.getElementById('serialInput').value = '';
 }
 
@@ -440,7 +445,7 @@ function generateGrid() {
     const right = document.getElementById('body-right');
     left.innerHTML = ''; 
     right.innerHTML = '';
-    
+
     for(let i = 1; i <= 36; i++) {
         const tr = document.createElement('tr');
         tr.id = `row-${i}`;
@@ -451,7 +456,7 @@ function generateGrid() {
             <td contenteditable="true" class="serial-input"></td>
             <td class="bc-target"></td>
         `;
-        
+
         if(i <= 18) {
             left.appendChild(tr);
         } else {
@@ -462,10 +467,9 @@ function generateGrid() {
 
 generateGrid();
 
-// ✅ FIXED: Generate QR code on page load
 window.onload = function() {
     updateHUBarcode();
-    updateQRCode(); // Generate QR immediately when page loads
+    updateQRCode();
 };
 </script>
 
