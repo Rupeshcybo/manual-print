@@ -14,15 +14,60 @@
         .main-logo { width: 170px; display: block; margin-bottom: 0.2mm; }
         .logo-tagline { font-size: 3.7pt; letter-spacing: 1.2px; font-weight: 600; text-transform: uppercase; padding-left: 26mm; color: #111; line-height: 1; }
         .hu-center-block { text-align: center; display: flex; flex-direction: column; align-items: center; font-family: "Times New Roman", Times, serif; }
-        .hu-text { font-size: 30px; font-weight: 900; margin-bottom: 2px; white-space: nowrap; outline: none; }
+        .hu-text { font-size: 30px; font-weight: 900; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif !important; }
+        .hu-text[contenteditable="true"] { font-family: "Times New Roman", Times, serif !important; }
+        .hu-text * { font-family: "Times New Roman", Times, serif !important; }
         #hu-barcode-svg { width: 230px; height: 55px; display: block; margin: 0 auto; }
         .contact-right { text-align: right; font-size: 11px; min-width: 200px; line-height: 1.4; }
         .company-name { font-size: 13px; font-weight: bold; margin-bottom: 3px; }
-        .product-meta { font-family: "STKaiti", "Kaiti SC", "KaiTi", "楷体", serif; font-size: 16px; font-weight: bold; line-height: 1.5; margin-bottom: 10px; }
+
+        .product-meta {
+            font-family: "Times New Roman", Times, serif !important;
+            font-size: 16px; 
+            font-weight: bold; 
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .product-meta div,
+        .product-meta span,
+        .product-meta * {
+            font-family: "Times New Roman", Times, serif !important;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        #modelNo, #itemCode, #itemDes {
+            font-family: "Times New Roman", Times, serif !important;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
         .tables-wrapper { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
         table { border-collapse: collapse; width: 52%; font-size: 10px; }
         th, td { border: 1px solid black; padding: 2px; text-align: center; height: 22px; vertical-align: bottom; }
         tr.hidden { display: none; }
+
+        /* RED HIGHLIGHTING FOR INVALID SERIALS */
+        tr.invalid-serial td {
+            background-color: #ffebee !important;
+            border: 2px solid #d32f2f !important;
+        }
+        tr.invalid-serial td:nth-child(3) {
+            color: #d32f2f !important;
+            font-weight: bold;
+        }
+
+        /* ORANGE HIGHLIGHTING FOR DUPLICATES */
+        tr.duplicate-serial td {
+            background-color: #fff3e0 !important;
+            border: 2px solid #ef6c00 !important;
+        }
+        tr.duplicate-serial td:nth-child(3) {
+            color: #ef6c00 !important;
+            font-weight: bold;
+        }
+
         td:nth-child(1), td:nth-child(2), td:nth-child(3) { font-family: "Times New Roman", Times, serif; font-size: 12px; padding-bottom: 2px; }
         td:nth-child(4) { font-size: 10px; padding: 0 0 1px 0; }
         .serial-input, .watt-cell { font-family: "Times New Roman", Times, serif; font-size: 12px; outline: none; }
@@ -38,10 +83,27 @@
         #qrcode { width: 85px; height: 85px; flex-shrink: 0; }
         #qrcode img { width: 85px !important; height: 85px !important; display: block; }
         #footer-barcode-svg { width: 150px; height: 40px; display: block; }
+
         .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100;}
         button { padding: 10px 15px; border: none; background: #5b4a8c; color: white; cursor: pointer; font-weight: bold; border-radius: 4px;}
         #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.4); z-index: 2000; width: 320px; }
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
+
+        /* Validation info display */
+        .validation-info {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+        .validation-info.has-errors {
+            background: #ffebee;
+            color: #d32f2f;
+            border-left: 3px solid #d32f2f;
+        }
+
         @media print { .ui-panel, #pasteModal { display: none; } body { background: white; } }
     </style>
 </head>
@@ -55,7 +117,8 @@
 
 <div id="pasteModal">
     <h3>Paste Serials</h3>
-    <textarea id="serialInput"></textarea>
+    <div class="validation-info" id="validationInfo" style="display:none;"></div>
+    <textarea id="serialInput" placeholder="Paste serial numbers (one per line)...&#10;Invalid ones (not 18 chars or duplicates) will show in RED"></textarea>
     <div style="display:flex; gap:10px;">
         <button onclick="processSerials()" style="flex:1">Apply</button>
         <button onclick="document.getElementById('pasteModal').style.display='none'" style="background:#7f8c8d">Close</button>
@@ -80,7 +143,7 @@
 
     <div class="product-meta">
         <div contenteditable="true" id="modelNo" oninput="updateQRCode()">Model No.: SGE625-132TGG</div>
-        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9910000441</div>
+        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9919000441</div>
         <div contenteditable="true" id="itemDes" oninput="updateQRCodeAndWatts()">Item Des: M625-S&amp;W...</div>
     </div>
 
@@ -125,7 +188,7 @@ function updateQRCode() {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = '';
     const qrData = `${getVal('modelNo').replace('Model No.:', '').trim()}|${getVal('itemCode').replace('Item Code:', '').trim()}|${getVal('itemDes').replace('Item Des:', '').trim()}`;
-    
+
     try { new QRCode(qrContainer, { text: qrData, width: 85, height: 85, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M }); } 
     catch (e) { console.error('QR Code error:', e); }
 }
@@ -146,42 +209,158 @@ function updateHUBarcode() {
     renderBarcode("#footer-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 40 });
 }
 
+// Check if serial is valid (18 chars)
+function isValidSerial(serial) {
+    return serial.length === 18;
+}
+
+// OLD LOGIC: Process serials with validation highlighting
 function processSerials() {
-    const serials = document.getElementById('serialInput').value.split(/\n/).map(s => s.trim()).filter(Boolean);
-    if (!serials.length) return alert('Please enter at least one serial number');
+    const input = document.getElementById('serialInput').value;
+    const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
+
+    if (serials.length === 0) {
+        alert('Please enter at least one serial number');
+        return;
+    }
 
     clearAll(false);
-    const watts = extractWatts(getVal('itemDes'));
 
-    serials.slice(0, 36).forEach((serial, i) => {
-        const row = document.getElementById(`row-${i + 1}`);
-        row.classList.remove('hidden');
-        row.querySelector('.serial-input').innerText = serial;
-        row.querySelector('.watt-cell').innerText = watts;
-        row.querySelector('.bc-target').innerHTML = `<svg id="bc-${i + 1}" class="row-barcode"></svg>`;
-        renderBarcode(`#bc-${i + 1}`, serial, { format: "CODE128", width: 1.2, height: 16 });
+    const huValue = getHUValue();
+    const watts = extractWatts(getVal('itemDes'));
+    const qty = Math.min(serials.length, 36);
+
+    // Track seen serials for duplicate detection
+    const seenSerials = new Set();
+    const duplicateSerials = new Set();
+
+    // First pass: find duplicates
+    serials.forEach(serial => {
+        if (seenSerials.has(serial)) {
+            duplicateSerials.add(serial);
+        } else {
+            seenSerials.add(serial);
+        }
     });
 
-    document.getElementById('net-weight-val').innerText = Math.min(serials.length, 36);
+    let invalidCount = 0;
+    let duplicateCount = 0;
+
+    // Second pass: apply to table with highlighting
+    serials.forEach((serial, index) => {
+        const rowNum = index + 1;
+        if (rowNum > 36) return;
+
+        const row = document.getElementById(`row-${rowNum}`);
+        if (row) {
+            row.classList.remove('hidden');
+
+            const serialCell = row.querySelector('.serial-input');
+            const wattCell = row.querySelector('.watt-cell');
+            const bcTarget = row.querySelector('.bc-target');
+
+            if (serialCell) serialCell.innerText = serial;
+            if (wattCell) wattCell.innerText = watts;
+
+            // Check if invalid (not 18 chars)
+            const valid = isValidSerial(serial);
+            const isDuplicate = duplicateSerials.has(serial);
+
+            if (!valid) {
+                row.classList.add('invalid-serial');
+                invalidCount++;
+            } else if (isDuplicate) {
+                row.classList.add('duplicate-serial');
+                duplicateCount++;
+            }
+
+            // Generate barcode for all (even invalid ones)
+            if (bcTarget) {
+                bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
+                try {
+                    JsBarcode(`#bc-${rowNum}`, serial, {
+                        format: "CODE128",
+                        width: 1.2,
+                        height: 16,
+                        displayValue: false,
+                        margin: 0
+                    });
+                } catch (e) {
+                    console.error('Row barcode error:', rowNum, e);
+                }
+            }
+        }
+    });
+
+    document.getElementById('net-weight-val').innerText = qty;
+
     updateHUBarcode();
     updateQRCode();
+    generateFooterBarcode(huValue);
+
+    // Show validation summary in modal
+    const validationInfo = document.getElementById('validationInfo');
+    if (invalidCount > 0 || duplicateCount > 0) {
+        validationInfo.className = 'validation-info has-errors';
+        let msg = '';
+        if (invalidCount > 0) msg += `${invalidCount} invalid (not 18 chars). `;
+        if (duplicateCount > 0) msg += `${duplicateCount} duplicates. `;
+        msg += 'Marked in RED/ORANGE on label.';
+        validationInfo.innerText = msg;
+        validationInfo.style.display = 'block';
+    } else {
+        validationInfo.style.display = 'none';
+    }
+
     document.getElementById('pasteModal').style.display = 'none';
 }
 
+function generateFooterBarcode(text) {
+    if (text && text.length > 0) {
+        try {
+            JsBarcode("#footer-barcode-svg", text, {
+                format: "CODE128",
+                width: 1.5,
+                height: 40,
+                displayValue: false,
+                margin: 0
+            });
+        } catch (e) {
+            console.error('Footer barcode error:', e);
+        }
+    }
+}
+
 function clearAll(hideModal = true) {
-    document.querySelectorAll('[id^="row-"]').forEach(row => {
-        row.classList.add('hidden');
-        row.querySelector('.serial-input').innerText = '';
-        row.querySelector('.watt-cell').innerText = '---';
-        row.querySelector('.bc-target').innerHTML = '';
-    });
+    for (let i = 1; i <= 36; i++) {
+        const row = document.getElementById(`row-${i}`);
+        if (row) {
+            row.classList.add('hidden');
+            row.classList.remove('invalid-serial', 'duplicate-serial');
+            const serialCell = row.querySelector('.serial-input');
+            const wattCell = row.querySelector('.watt-cell');
+            const bcTarget = row.querySelector('.bc-target');
+
+            if (serialCell) serialCell.innerText = '';
+            if (wattCell) wattCell.innerText = '---';
+            if (bcTarget) bcTarget.innerHTML = '';
+        }
+    }
+
     document.getElementById('net-weight-val').innerText = '';
     document.getElementById('footer-barcode-svg').innerHTML = '';
-    if (hideModal) document.getElementById('serialInput').value = '';
+
+    if (hideModal) {
+        document.getElementById('serialInput').value = '';
+        document.getElementById('validationInfo').style.display = 'none';
+    }
 }
 
 function generateGrid() {
     const left = document.getElementById('body-left'), right = document.getElementById('body-right');
+    left.innerHTML = ''; 
+    right.innerHTML = '';
+
     for(let i = 1; i <= 36; i++) {
         const tr = document.createElement('tr');
         tr.id = `row-${i}`;
