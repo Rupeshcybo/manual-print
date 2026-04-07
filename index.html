@@ -9,69 +9,40 @@
         @page { size: A4; margin: 0; }
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7f6; display: flex; justify-content: center; }
         .label-page { width: 210mm; height: 297mm; background: white; padding: 8mm 10mm; box-sizing: border-box; position: relative; display: flex; flex-direction: column; }
-        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: start; margin-bottom: 12px; gap: 10px; }
+        
+        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: start; margin-bottom: 5px; gap: 15px; }
+        
         .logo-block { display: flex; flex-direction: column; min-width: 175px; }
         .main-logo { width: 170px; display: block; margin-bottom: 0.2mm; }
         .logo-tagline { font-size: 3.7pt; letter-spacing: 1.2px; font-weight: 600; text-transform: uppercase; padding-left: 26mm; color: #111; line-height: 1; }
-        .hu-center-block { text-align: center; display: flex; flex-direction: column; align-items: center; font-family: "Times New Roman", Times, serif; }
-        .hu-text { font-size: 30px; font-weight: 900; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif !important; }
-        .hu-text[contenteditable="true"] { font-family: "Times New Roman", Times, serif !important; }
-        .hu-text * { font-family: "Times New Roman", Times, serif !important; }
-        #hu-barcode-svg { width: 230px; height: 45px; display: block; margin: 0 auto; }
-        .contact-right { text-align: right; font-size: 11px; min-width: 200px; line-height: 1.4; }
-        .company-name { font-size: 13px; font-weight: bold; margin-bottom: 3px; }
+        
+        .hu-center-block { text-align: left; display: flex; flex-direction: column; align-items: flex-start; font-family: "Times New Roman", Times, serif; padding-top: 5px; margin-left: 4mm; }
+        .hu-text { font-size: 29px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif !important; }
+        #hu-barcode-svg { width: 180px; height: 50px; display: block; margin: 0; margin-left: 100px; margin-top: 2px; }
+        
+        .contact-right { text-align: right; font-size: 10px; min-width: 180px; line-height: 1.3; padding-top: 5px; }
+        .company-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
 
-        .product-meta {
-            font-family: "Times New Roman", Times, serif !important;
-            font-size: 16px; 
-            font-weight: bold; 
-            line-height: 1.5;
-            margin-bottom: 10px;
-        }
-
-        .product-meta div,
-        .product-meta span,
-        .product-meta * {
-            font-family: "Times New Roman", Times, serif !important;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        #modelNo, #itemCode, #itemDes {
-            font-family: "Times New Roman", Times, serif !important;
-            font-size: 16px;
-            font-weight: bold;
-        }
+        .product-meta { font-family: "Times New Roman", Times, serif !important; font-size: 29px; font-weight: bold; line-height: 1.4; margin-bottom: 15px; margin-top: 5px; text-align: left; padding-left: 0; }
+        .product-meta div { font-family: "Times New Roman", Times, serif !important; font-size: 29px; font-weight: bold; margin-bottom: 4px; }
+        #modelNo, #itemCode, #itemDes { font-family: "Times New Roman", Times, serif !important; font-size: 19px; font-weight: bold; }
 
         .tables-wrapper { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
         table { border-collapse: collapse; width: 52%; font-size: 10px; }
         th, td { border: 1px solid black; padding: 2px; text-align: center; height: 22px; vertical-align: bottom; }
         tr.hidden { display: none; }
 
-        /* RED HIGHLIGHTING FOR INVALID SERIALS */
-        tr.invalid-serial td {
-            background-color: #ffebee !important;
-            border: 2px solid #d32f2f !important;
-        }
-        tr.invalid-serial td:nth-child(3) {
-            color: #d32f2f !important;
-            font-weight: bold;
-        }
+        tr.invalid-serial td { background-color: #ffebee !important; border: 2px solid #d32f2f !important; }
+        tr.invalid-serial td:nth-child(3) { color: #d32f2f !important; font-weight: bold; }
 
-        /* ORANGE HIGHLIGHTING FOR DUPLICATES */
-        tr.duplicate-serial td {
-            background-color: #fff3e0 !important;
-            border: 2px solid #ef6c00 !important;
-        }
-        tr.duplicate-serial td:nth-child(3) {
-            color: #ef6c00 !important;
-            font-weight: bold;
-        }
+        tr.duplicate-serial td { background-color: #fff3e0 !important; border: 2px solid #ef6c00 !important; }
+        tr.duplicate-serial td:nth-child(3) { color: #ef6c00 !important; font-weight: bold; }
 
         td:nth-child(1), td:nth-child(2), td:nth-child(3) { font-family: "Times New Roman", Times, serif; font-size: 12px; padding-bottom: 2px; }
         td:nth-child(4) { font-size: 10px; padding: 0 0 1px 0; }
         .serial-input, .watt-cell { font-family: "Times New Roman", Times, serif; font-size: 12px; outline: none; }
         .row-barcode { width: 110px; height: 16px; display: block; margin: 0 auto; }
+        
         .footer-area { margin-top: auto; width: 100%; padding-bottom: 10mm; }
         .footer-align-row { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; padding: 0 5mm; }
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
@@ -89,21 +60,10 @@
         #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.4); z-index: 2000; width: 320px; }
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
 
-        .validation-info {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 8px;
-            padding: 5px;
-            background: #f5f5f5;
-            border-radius: 3px;
-        }
-        .validation-info.has-errors {
-            background: #ffebee;
-            color: #d32f2f;
-            border-left: 3px solid #d32f2f;
-        }
+        .validation-info { font-size: 11px; color: #666; margin-bottom: 8px; padding: 5px; background: #f5f5f5; border-radius: 3px; }
+        .validation-info.has-errors { background: #ffebee; color: #d32f2f; border-left: 3px solid #d32f2f; }
 
-        @media print { .ui-panel, #pasteModal { display: none; } body { background: white; } }
+        @media print { .ui-panel, #pasteModal { display: none !important; } body { background: white; } }
     </style>
 </head>
 <body>
@@ -131,7 +91,7 @@
             <div class="logo-tagline">FOR A BETTER FUTURE</div>
         </div>
         <div class="hu-center-block">
-            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUBarcode()">P No.: D0202Y002</div>
+            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUBarcode()">P NO.: 2000000001</div>
             <svg id="hu-barcode-svg"></svg>
         </div>
         <div class="contact-right">
@@ -142,8 +102,8 @@
 
     <div class="product-meta">
         <div contenteditable="true" id="modelNo" oninput="updateQRCode()">Model No.: SGE625-132TGG</div>
-        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9919000441</div>
-        <div contenteditable="true" id="itemDes" oninput="updateQRCodeAndWatts()">Item Des: M625-S&amp;W...</div>
+        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9910001119</div>
+        <div contenteditable="true" id="itemDes" oninput="updateQRCodeAndWatts()">Item Des: M625-BLUP16B1132TG2G-2382*1134-96-30-1.4</div>
     </div>
 
     <div class="tables-wrapper">
@@ -187,7 +147,6 @@ function updateQRCode() {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = '';
     const qrData = `${getVal('modelNo').replace('Model No.:', '').trim()}|${getVal('itemCode').replace('Item Code:', '').trim()}|${getVal('itemDes').replace('Item Des:', '').trim()}`;
-
     try { new QRCode(qrContainer, { text: qrData, width: 85, height: 85, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M }); } 
     catch (e) { console.error('QR Code error:', e); }
 }
@@ -201,126 +160,74 @@ function getHUValue() {
 
 function renderBarcode(selector, text, opts) {
     if (text && text.length > 0) {
-        try { 
-            JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); 
-        } catch(e) {
-            console.error('Barcode error:', e);
-        }
+        try { JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); } catch(e) { console.error('Barcode error:', e); }
     }
 }
 
-// FIXED: Clear barcode when value is empty
 function clearBarcode(selector) {
     const element = document.querySelector(selector);
-    if (element) {
-        element.innerHTML = '';
-    }
+    if (element) element.innerHTML = '';
 }
 
 function updateHUBarcode() {
     const barcodeValue = getHUValue();
-
-    // If no value after colon, clear both barcodes
     if (!barcodeValue || barcodeValue.length === 0) {
         clearBarcode("#hu-barcode-svg");
         clearBarcode("#footer-barcode-svg");
         return;
     }
-
-    // Otherwise generate barcodes
-    renderBarcode("#hu-barcode-svg", barcodeValue, { format: "CODE128", width: 2, height: 55 });
+    renderBarcode("#hu-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 50 });
     renderBarcode("#footer-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 40 });
 }
 
-// Check if serial is valid (18 chars)
 function isValidSerial(serial) {
     return serial.length === 18;
 }
 
-// OLD LOGIC: Process serials with validation highlighting
 function processSerials() {
     const input = document.getElementById('serialInput').value;
     const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
-
     if (serials.length === 0) {
         alert('Please enter at least one serial number');
         return;
     }
-
     clearAll(false);
-
     const watts = extractWatts(getVal('itemDes'));
     const qty = Math.min(serials.length, 36);
-
-    // Track seen serials for duplicate detection
     const seenSerials = new Set();
     const duplicateSerials = new Set();
-
-    // First pass: find duplicates
     serials.forEach(serial => {
-        if (seenSerials.has(serial)) {
-            duplicateSerials.add(serial);
-        } else {
-            seenSerials.add(serial);
-        }
+        if (seenSerials.has(serial)) duplicateSerials.add(serial);
+        else seenSerials.add(serial);
     });
-
     let invalidCount = 0;
     let duplicateCount = 0;
-
-    // Second pass: apply to table with highlighting
     serials.forEach((serial, index) => {
         const rowNum = index + 1;
         if (rowNum > 36) return;
-
         const row = document.getElementById(`row-${rowNum}`);
         if (row) {
             row.classList.remove('hidden');
-
             const serialCell = row.querySelector('.serial-input');
             const wattCell = row.querySelector('.watt-cell');
             const bcTarget = row.querySelector('.bc-target');
-
             if (serialCell) serialCell.innerText = serial;
             if (wattCell) wattCell.innerText = watts;
-
-            // Check if invalid (not 18 chars)
             const valid = isValidSerial(serial);
             const isDuplicate = duplicateSerials.has(serial);
-
-            if (!valid) {
-                row.classList.add('invalid-serial');
-                invalidCount++;
-            } else if (isDuplicate) {
-                row.classList.add('duplicate-serial');
-                duplicateCount++;
-            }
-
-            // Generate barcode for all (even invalid ones)
+            if (!valid) { row.classList.add('invalid-serial'); invalidCount++; }
+            else if (isDuplicate) { row.classList.add('duplicate-serial'); duplicateCount++; }
             if (bcTarget) {
                 bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
                 try {
-                    JsBarcode(`#bc-${rowNum}`, serial, {
-                        format: "CODE128",
-                        width: 1.2,
-                        height: 16,
-                        displayValue: false,
-                        margin: 0
-                    });
-                } catch (e) {
-                    console.error('Row barcode error:', rowNum, e);
-                }
+                    JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.2, height: 16, displayValue: false, margin: 0 });
+                } catch (e) { console.error('Row barcode error:', rowNum, e); }
             }
         }
     });
-
     document.getElementById('net-weight-val').innerText = qty;
-
-    // Update barcodes - will clear if pallet no is empty
     updateHUBarcode();
     updateQRCode();
-
-    // Show validation summary in modal
     const validationInfo = document.getElementById('validationInfo');
     if (invalidCount > 0 || duplicateCount > 0) {
         validationInfo.className = 'validation-info has-errors';
@@ -333,7 +240,6 @@ function processSerials() {
     } else {
         validationInfo.style.display = 'none';
     }
-
     document.getElementById('pasteModal').style.display = 'none';
 }
 
@@ -346,16 +252,13 @@ function clearAll(hideModal = true) {
             const serialCell = row.querySelector('.serial-input');
             const wattCell = row.querySelector('.watt-cell');
             const bcTarget = row.querySelector('.bc-target');
-
             if (serialCell) serialCell.innerText = '';
             if (wattCell) wattCell.innerText = '---';
             if (bcTarget) bcTarget.innerHTML = '';
         }
     }
-
     document.getElementById('net-weight-val').innerText = '';
     document.getElementById('footer-barcode-svg').innerHTML = '';
-
     if (hideModal) {
         document.getElementById('serialInput').value = '';
         document.getElementById('validationInfo').style.display = 'none';
@@ -366,7 +269,6 @@ function generateGrid() {
     const left = document.getElementById('body-left'), right = document.getElementById('body-right');
     left.innerHTML = ''; 
     right.innerHTML = '';
-
     for(let i = 1; i <= 36; i++) {
         const tr = document.createElement('tr');
         tr.id = `row-${i}`;
