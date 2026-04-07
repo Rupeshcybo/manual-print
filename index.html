@@ -89,7 +89,6 @@
         #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.4); z-index: 2000; width: 320px; }
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
 
-        /* Validation info display */
         .validation-info {
             font-size: 11px;
             color: #666;
@@ -196,15 +195,39 @@ function updateQRCode() {
 function getHUValue() {
     const text = getVal('hu-val');
     const colonIndex = text.indexOf(':');
+    if (colonIndex === -1) return '';
     return text.substring(colonIndex + 1).trim();
 }
 
 function renderBarcode(selector, text, opts) {
-    if (text) try { JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); } catch(e) {}
+    if (text && text.length > 0) {
+        try { 
+            JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); 
+        } catch(e) {
+            console.error('Barcode error:', e);
+        }
+    }
+}
+
+// FIXED: Clear barcode when value is empty
+function clearBarcode(selector) {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.innerHTML = '';
+    }
 }
 
 function updateHUBarcode() {
     const barcodeValue = getHUValue();
+
+    // If no value after colon, clear both barcodes
+    if (!barcodeValue || barcodeValue.length === 0) {
+        clearBarcode("#hu-barcode-svg");
+        clearBarcode("#footer-barcode-svg");
+        return;
+    }
+
+    // Otherwise generate barcodes
     renderBarcode("#hu-barcode-svg", barcodeValue, { format: "CODE128", width: 2, height: 55 });
     renderBarcode("#footer-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 40 });
 }
@@ -226,7 +249,6 @@ function processSerials() {
 
     clearAll(false);
 
-    const huValue = getHUValue();
     const watts = extractWatts(getVal('itemDes'));
     const qty = Math.min(serials.length, 36);
 
@@ -294,9 +316,9 @@ function processSerials() {
 
     document.getElementById('net-weight-val').innerText = qty;
 
+    // Update barcodes - will clear if pallet no is empty
     updateHUBarcode();
     updateQRCode();
-    generateFooterBarcode(huValue);
 
     // Show validation summary in modal
     const validationInfo = document.getElementById('validationInfo');
@@ -313,22 +335,6 @@ function processSerials() {
     }
 
     document.getElementById('pasteModal').style.display = 'none';
-}
-
-function generateFooterBarcode(text) {
-    if (text && text.length > 0) {
-        try {
-            JsBarcode("#footer-barcode-svg", text, {
-                format: "CODE128",
-                width: 1.5,
-                height: 40,
-                displayValue: false,
-                margin: 0
-            });
-        } catch (e) {
-            console.error('Footer barcode error:', e);
-        }
-    }
 }
 
 function clearAll(hideModal = true) {
