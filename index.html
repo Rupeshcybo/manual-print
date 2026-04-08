@@ -12,45 +12,28 @@
 
         .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: center; margin-bottom: 5px; gap: 15px; }
 
-        .logo-block { 
-            display: flex; 
-            flex-direction: column; 
-            width: 200px;
-            height: 60px;
-            overflow: hidden;
-            position: relative;
-        }
-        .main-logo { 
-            width: 280px;
-            height: 60px;
-            object-fit: cover;
-            object-position: left center;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
+        .logo-block { display: flex; flex-direction: column; width: 200px; height: 60px; overflow: hidden; position: relative; }
+        .main-logo { width: 280px; height: 60px; object-fit: cover; object-position: left center; position: absolute; left: 0; top: 0; }
 
         .hu-center-block { text-align: left; display: flex; flex-direction: column; align-items: flex-start; font-family: "Times New Roman", Times, serif; padding-top: 5px; margin-left: 4mm; }
-        .hu-text { font-size: 29px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif !important; }
-        #hu-barcode-svg { width: 180px; height: 50px; display: block; margin: 0; margin-left: 100px; margin-top: 2px; }
+        .hu-text { font-size: 24px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif; }
+        #hu-barcode-svg { width: 160px; height: 45px; display: block; margin: 2px 0 0 80px; }
 
         .contact-right { text-align: right; font-size: 10px; min-width: 180px; line-height: 1.3; padding-top: 5px; }
         .company-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
 
-        .product-meta { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; line-height: 1.1; margin-bottom: 10px; margin-top: 3px; text-align: left; padding-left: 0; }
-        .product-meta div { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; margin-bottom: 0px; }
-        #modelNo, #itemCode, #itemDes { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; }
+        .product-meta { font-family: "Times New Roman", Times, serif; font-size: 16px; font-weight: bold; line-height: 1.1; margin-bottom: 10px; margin-top: 3px; text-align: left; }
+        .product-meta div { font-size: 16px; font-weight: bold; margin-bottom: 0; }
 
         .tables-wrapper { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
         table { border-collapse: collapse; width: 52%; font-size: 10px; }
         th, td { border: 1px solid black; padding: 2px; text-align: center; height: 22px; vertical-align: bottom; }
         tr.hidden { display: none; }
 
-        tr.invalid-serial td { background-color: #ffebee !important; border: 2px solid #d32f2f !important; }
-        tr.invalid-serial td:nth-child(3) { color: #d32f2f !important; font-weight: bold; }
-
-        tr.duplicate-serial td { background-color: #fff3e0 !important; border: 2px solid #ef6c00 !important; }
-        tr.duplicate-serial td:nth-child(3) { color: #ef6c00 !important; font-weight: bold; }
+        tr.invalid-serial td { background-color: #ffebee; border: 2px solid #d32f2f; }
+        tr.invalid-serial td:nth-child(3) { color: #d32f2f; font-weight: bold; }
+        tr.duplicate-serial td { background-color: #fff3e0; border: 2px solid #ef6c00; }
+        tr.duplicate-serial td:nth-child(3) { color: #ef6c00; font-weight: bold; }
 
         td:nth-child(1), td:nth-child(2), td:nth-child(3) { font-family: "Times New Roman", Times, serif; font-size: 12px; padding-bottom: 2px; }
         td:nth-child(4) { font-size: 10px; padding: 0 0 1px 0; }
@@ -62,28 +45,17 @@
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
         .footer-left div { font-family: "Times New Roman", Times, serif; font-size: 11px; font-weight: bold; }
         .footer-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        .barcode-qr-container { 
-            display: flex; 
-            align-items: flex-end; 
-            gap: 2.2mm; 
-            margin-bottom: 12mm; 
-        }
+        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 12mm; }
         .sig-line { font-size: 11px; font-weight: bold; border-top: 1px solid #000; width: 150px; padding-top: 3px; text-align: center; margin-top: 3px; font-family: "Times New Roman", Times, serif; }
         .sig-label { font-size: 10px; text-align: center; font-family: "Times New Roman", Times, serif; }
         #qrcode { width: 100px; height: 100px; flex-shrink: 0; }
         #qrcode img { width: 100px !important; height: 100px !important; display: block; }
-        #footer-barcode-svg { 
-            width: 150px; 
-            height: 40px; 
-            display: block; 
-            margin-bottom: 0;
-        }
+        #footer-barcode-svg { width: 150px; height: 40px; display: block; }
 
-        .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100;}
-        button { padding: 10px 15px; border: none; background: #5b4a8c; color: white; cursor: pointer; font-weight: bold; border-radius: 4px;}
+        .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        button { padding: 10px 15px; border: none; background: #5b4a8c; color: white; cursor: pointer; font-weight: bold; border-radius: 4px; }
         #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.4); z-index: 2000; width: 320px; }
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
-
         .validation-info { font-size: 11px; color: #666; margin-bottom: 8px; padding: 5px; background: #f5f5f5; border-radius: 3px; }
         .validation-info.has-errors { background: #ffebee; color: #d32f2f; border-left: 3px solid #d32f2f; }
 
@@ -169,57 +141,38 @@ function updateQRCodeAndWatts() {
 function updateQRCode() {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = '';
-
     const modelNo = getVal('modelNo').replace('Model No.:', '').trim();
     const itemCode = getVal('itemCode').replace('Item Code:', '').trim();
     const itemDes = getVal('itemDes').replace('Item Des:', '').trim();
     const huValue = getHUValue();
-
-    const vCard = `BEGIN:VCARD
-VERSION:3.0
-FN:Saatvik Solar - ${modelNo || 'Product'}
-ORG:Saatvik Solar Industries Pvt. Ltd.
-TEL:1800-1801-051
-EMAIL:info@saatvikgroup.com
-URL:https://www.saatvikgroup.com
-NOTE:Model: ${modelNo}|Item Code: ${itemCode}|Description: ${itemDes}|HU: ${huValue}
-END:VCARD`;
-
-    try { 
-        new QRCode(qrContainer, { 
-            text: vCard, 
-            width: 100, 
-            height: 100, 
-            colorDark: "#000", 
-            colorLight: "#fff", 
-            correctLevel: QRCode.CorrectLevel.M 
-        }); 
-    } catch (e) { 
-        console.error('QR Code error:', e); 
+    const vCard = `BEGIN:VCARD\nVERSION:3.0\nFN:Saatvik Solar - ${modelNo || 'Product'}\nORG:Saatvik Solar Industries Pvt. Ltd.\nTEL:1800-1801-051\nEMAIL:info@saatvikgroup.com\nURL:https://www.saatvikgroup.com\nNOTE:Model: ${modelNo}|Item Code: ${itemCode}|Description: ${itemDes}|HU: ${huValue}\nEND:VCARD`;
+    try {
+        new QRCode(qrContainer, { text: vCard, width: 100, height: 100, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M });
+    } catch (e) {
+        console.error('QR Code error:', e);
     }
 }
 
 function getHUValue() {
     const text = getVal('hu-val');
     const colonIndex = text.indexOf(':');
-    if (colonIndex === -1) return '';
-    return text.substring(colonIndex + 1).trim();
+    return colonIndex === -1 ? '' : text.substring(colonIndex + 1).trim();
 }
 
 function renderBarcode(selector, text, opts) {
     if (text && text.length > 0) {
-        try { JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); } catch(e) { console.error('Barcode error:', e); }
+        try { JsBarcode(selector, text, { displayValue: false, margin: 0, ...opts }); } catch (e) { console.error('Barcode error:', e); }
     }
 }
 
 function clearBarcode(selector) {
-    const element = document.querySelector(selector);
-    if (element) element.innerHTML = '';
+    const el = document.querySelector(selector);
+    if (el) el.innerHTML = '';
 }
 
 function updateHUBarcode() {
     const barcodeValue = getHUValue();
-    if (!barcodeValue || barcodeValue.length === 0) {
+    if (!barcodeValue) {
         clearBarcode("#hu-barcode-svg");
         clearBarcode("#footer-barcode-svg");
         return;
@@ -235,10 +188,7 @@ function isValidSerial(serial) {
 function processSerials() {
     const input = document.getElementById('serialInput').value;
     const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
-    if (serials.length === 0) {
-        alert('Please enter at least one serial number');
-        return;
-    }
+    if (serials.length === 0) { alert('Please enter at least one serial number'); return; }
     clearAll(false);
     const watts = extractWatts(getVal('itemDes'));
     const qty = Math.min(serials.length, 36);
@@ -248,29 +198,27 @@ function processSerials() {
         if (seenSerials.has(serial)) duplicateSerials.add(serial);
         else seenSerials.add(serial);
     });
-    let invalidCount = 0;
-    let duplicateCount = 0;
+    let invalidCount = 0, duplicateCount = 0;
     serials.forEach((serial, index) => {
         const rowNum = index + 1;
         if (rowNum > 36) return;
         const row = document.getElementById(`row-${rowNum}`);
-        if (row) {
-            row.classList.remove('hidden');
-            const serialCell = row.querySelector('.serial-input');
-            const wattCell = row.querySelector('.watt-cell');
-            const bcTarget = row.querySelector('.bc-target');
-            if (serialCell) serialCell.innerText = serial;
-            if (wattCell) wattCell.innerText = watts;
-            const valid = isValidSerial(serial);
-            const isDuplicate = duplicateSerials.has(serial);
-            if (!valid) { row.classList.add('invalid-serial'); invalidCount++; }
-            else if (isDuplicate) { row.classList.add('duplicate-serial'); duplicateCount++; }
-            if (bcTarget) {
-                bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
-                try {
-                    JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.2, height: 16, displayValue: false, margin: 0 });
-                } catch (e) { console.error('Row barcode error:', rowNum, e); }
-            }
+        if (!row) return;
+        row.classList.remove('hidden');
+        const serialCell = row.querySelector('.serial-input');
+        const wattCell = row.querySelector('.watt-cell');
+        const bcTarget = row.querySelector('.bc-target');
+        if (serialCell) serialCell.innerText = serial;
+        if (wattCell) wattCell.innerText = watts;
+        const valid = isValidSerial(serial);
+        const isDuplicate = duplicateSerials.has(serial);
+        if (!valid) { row.classList.add('invalid-serial'); invalidCount++; }
+        else if (isDuplicate) { row.classList.add('duplicate-serial'); duplicateCount++; }
+        if (bcTarget) {
+            bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
+            try {
+                JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.2, height: 16, displayValue: false, margin: 0 });
+            } catch (e) { console.error('Row barcode error:', rowNum, e); }
         }
     });
     document.getElementById('net-weight-val').innerText = qty;
@@ -294,16 +242,15 @@ function processSerials() {
 function clearAll(hideModal = true) {
     for (let i = 1; i <= 36; i++) {
         const row = document.getElementById(`row-${i}`);
-        if (row) {
-            row.classList.add('hidden');
-            row.classList.remove('invalid-serial', 'duplicate-serial');
-            const serialCell = row.querySelector('.serial-input');
-            const wattCell = row.querySelector('.watt-cell');
-            const bcTarget = row.querySelector('.bc-target');
-            if (serialCell) serialCell.innerText = '';
-            if (wattCell) wattCell.innerText = '---';
-            if (bcTarget) bcTarget.innerHTML = '';
-        }
+        if (!row) continue;
+        row.classList.add('hidden');
+        row.classList.remove('invalid-serial', 'duplicate-serial');
+        const serialCell = row.querySelector('.serial-input');
+        const wattCell = row.querySelector('.watt-cell');
+        const bcTarget = row.querySelector('.bc-target');
+        if (serialCell) serialCell.innerText = '';
+        if (wattCell) wattCell.innerText = '---';
+        if (bcTarget) bcTarget.innerHTML = '';
     }
     document.getElementById('net-weight-val').innerText = '';
     document.getElementById('footer-barcode-svg').innerHTML = '';
@@ -315,9 +262,9 @@ function clearAll(hideModal = true) {
 
 function generateGrid() {
     const left = document.getElementById('body-left'), right = document.getElementById('body-right');
-    left.innerHTML = ''; 
+    left.innerHTML = '';
     right.innerHTML = '';
-    for(let i = 1; i <= 36; i++) {
+    for (let i = 1; i <= 36; i++) {
         const tr = document.createElement('tr');
         tr.id = `row-${i}`;
         tr.className = 'hidden';
@@ -327,8 +274,8 @@ function generateGrid() {
 }
 
 generateGrid();
-window.onload = () => { updateHUBarcode(); updateQRCode(); };
+updateHUBarcode();
+updateQRCode();
 </script>
-
 </body>
 </html>
