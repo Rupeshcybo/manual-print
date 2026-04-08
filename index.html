@@ -37,9 +37,9 @@
         .contact-right { text-align: right; font-size: 10px; min-width: 180px; line-height: 1.3; padding-top: 5px; }
         .company-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
 
-        .product-meta { font-family: "Times New Roman", Times, serif !important; font-size: 29px; font-weight: bold; line-height: 1.4; margin-bottom: 15px; margin-top: 5px; text-align: left; padding-left: 0; }
-        .product-meta div { font-family: "Times New Roman", Times, serif !important; font-size: 29px; font-weight: bold; margin-bottom: 4px; }
-        #modelNo, #itemCode, #itemDes { font-family: "Times New Roman", Times, serif !important; font-size: 19px; font-weight: bold; }
+        .product-meta { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; line-height: 1.1; margin-bottom: 10px; margin-top: 3px; text-align: left; padding-left: 0; }
+        .product-meta div { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; margin-bottom: 0px; }
+        #modelNo, #itemCode, #itemDes { font-family: "Times New Roman", Times, serif !important; font-size: 16px; font-weight: bold; }
 
         .tables-wrapper { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
         table { border-collapse: collapse; width: 52%; font-size: 10px; }
@@ -62,11 +62,11 @@
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
         .footer-left div { font-family: "Times New Roman", Times, serif; font-size: 11px; font-weight: bold; }
         .footer-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        .barcode-qr-container { display: flex; align-items: center; gap: 2.2mm; margin-bottom: 8px; }
+        .barcode-qr-container { display: flex; align-items: center; gap: 2.2mm; margin-bottom: 12mm; }
         .sig-line { font-size: 11px; font-weight: bold; border-top: 1px solid #000; width: 150px; padding-top: 3px; text-align: center; margin-top: 3px; font-family: "Times New Roman", Times, serif; }
         .sig-label { font-size: 10px; text-align: center; font-family: "Times New Roman", Times, serif; }
-        #qrcode { width: 85px; height: 85px; flex-shrink: 0; }
-        #qrcode img { width: 85px !important; height: 85px !important; display: block; }
+        #qrcode { width: 100px; height: 100px; flex-shrink: 0; }
+        #qrcode img { width: 100px !important; height: 100px !important; display: block; }
         #footer-barcode-svg { width: 150px; height: 40px; display: block; }
 
         .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100;}
@@ -159,9 +159,36 @@ function updateQRCodeAndWatts() {
 function updateQRCode() {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = '';
-    const qrData = `${getVal('modelNo').replace('Model No.:', '').trim()}|${getVal('itemCode').replace('Item Code:', '').trim()}|${getVal('itemDes').replace('Item Des:', '').trim()}`;
-    try { new QRCode(qrContainer, { text: qrData, width: 85, height: 85, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M }); } 
-    catch (e) { console.error('QR Code error:', e); }
+
+    // Create vCard format
+    const modelNo = getVal('modelNo').replace('Model No.:', '').trim();
+    const itemCode = getVal('itemCode').replace('Item Code:', '').trim();
+    const itemDes = getVal('itemDes').replace('Item Des:', '').trim();
+    const huValue = getHUValue();
+
+    // vCard 3.0 format with product information
+    const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:Saatvik Solar - ${modelNo || 'Product'}
+ORG:Saatvik Solar Industries Pvt. Ltd.
+TEL:1800-1801-051
+EMAIL:info@saatvikgroup.com
+URL:https://www.saatvikgroup.com
+NOTE:Model: ${modelNo}|Item Code: ${itemCode}|Description: ${itemDes}|HU: ${huValue}
+END:VCARD`;
+
+    try { 
+        new QRCode(qrContainer, { 
+            text: vCard, 
+            width: 100, 
+            height: 100, 
+            colorDark: "#000", 
+            colorLight: "#fff", 
+            correctLevel: QRCode.CorrectLevel.M 
+        }); 
+    } catch (e) { 
+        console.error('QR Code error:', e); 
+    }
 }
 
 function getHUValue() {
