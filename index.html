@@ -35,8 +35,6 @@
         th { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 2.9mm; white-space: nowrap; }
         tr.hidden { display: none; }
 
-        tr.invalid-serial td { background-color: #ffebee; border: 2px solid #d32f2f; }
-        tr.invalid-serial td:nth-child(3) { color: #d32f2f; font-weight: bold; }
         tr.duplicate-serial td { background-color: #fff3e0; border: 2px solid #ef6c00; }
         tr.duplicate-serial td:nth-child(3) { color: #ef6c00; font-weight: bold; }
 
@@ -62,7 +60,6 @@
         #pasteModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.4); z-index: 2000; width: 320px; }
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
         .validation-info { font-size: 11px; color: #666; margin-bottom: 8px; padding: 5px; background: #f5f5f5; border-radius: 3px; }
-        .validation-info.has-errors { background: #ffebee; color: #d32f2f; border-left: 3px solid #d32f2f; }
 
         @media print { .ui-panel, #pasteModal { display: none !important; } body { background: white; } }
     </style>
@@ -78,7 +75,7 @@
 <div id="pasteModal">
     <h3>Paste Serials</h3>
     <div class="validation-info" id="validationInfo" style="display:none;"></div>
-    <textarea id="serialInput" placeholder="Paste serial numbers (one per line)...&#10;Invalid ones (not 18 chars or duplicates) will show in RED"></textarea>
+    <textarea id="serialInput" placeholder="Paste serial numbers (one per line)...&#10;Duplicates will show in ORANGE"></textarea>
     <div style="display:flex; gap:10px;">
         <button onclick="processSerials()" style="flex:1">Apply</button>
         <button onclick="document.getElementById('pasteModal').style.display='none'" style="background:#7f8c8d">Close</button>
@@ -186,9 +183,6 @@ function updateHUBarcode() {
     renderBarcode("#footer-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 40 });
 }
 
-function isValidSerial(serial) {
-    return serial.length === 18;
-}
 
 function processSerials() {
     const input = document.getElementById('serialInput').value;
@@ -203,7 +197,7 @@ function processSerials() {
         if (seenSerials.has(serial)) duplicateSerials.add(serial);
         else seenSerials.add(serial);
     });
-    let invalidCount = 0, duplicateCount = 0;
+    let duplicateCount = 0;
     serials.forEach((serial, index) => {
         const rowNum = index + 1;
         if (rowNum > 36) return;
@@ -215,10 +209,8 @@ function processSerials() {
         const bcTarget = row.querySelector('.bc-target');
         if (serialCell) serialCell.innerText = serial;
         if (wattCell) wattCell.innerText = watts;
-        const valid = isValidSerial(serial);
         const isDuplicate = duplicateSerials.has(serial);
-        if (!valid) { row.classList.add('invalid-serial'); invalidCount++; }
-        else if (isDuplicate) { row.classList.add('duplicate-serial'); duplicateCount++; }
+        if (isDuplicate) { row.classList.add('duplicate-serial'); duplicateCount++; }
         if (bcTarget) {
             bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
             try {
@@ -230,12 +222,11 @@ function processSerials() {
     updateHUBarcode();
     updateQRCode();
     const validationInfo = document.getElementById('validationInfo');
-    if (invalidCount > 0 || duplicateCount > 0) {
-        validationInfo.className = 'validation-info has-errors';
+    if (duplicateCount > 0) {
+        validationInfo.className = 'validation-info';
         let msg = '';
-        if (invalidCount > 0) msg += `${invalidCount} invalid (not 18 chars). `;
         if (duplicateCount > 0) msg += `${duplicateCount} duplicates. `;
-        msg += 'Marked in RED/ORANGE on label.';
+        msg += 'Marked in ORANGE on label.';
         validationInfo.innerText = msg;
         validationInfo.style.display = 'block';
     } else {
@@ -249,7 +240,7 @@ function clearAll(hideModal = true) {
         const row = document.getElementById(`row-${i}`);
         if (!row) continue;
         row.classList.add('hidden');
-        row.classList.remove('invalid-serial', 'duplicate-serial');
+        row.classList.remove('duplicate-serial');
         const serialCell = row.querySelector('.serial-input');
         const wattCell = row.querySelector('.watt-cell');
         const bcTarget = row.querySelector('.bc-target');
