@@ -214,7 +214,7 @@ function processSerials() {
         if (bcTarget) {
             bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
             try {
-                JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.4, height: 22, displayValue: false, margin: 0 });
+                JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.4, height: 24, displayValue: false, margin: 0 });
             } catch (e) { console.error('Row barcode error:', rowNum, e); }
         }
     });
