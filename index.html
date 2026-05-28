@@ -10,7 +10,7 @@
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7f6; display: flex; justify-content: center; }
         .label-page { width: 210mm; height: 297mm; background: white; padding: 8mm 10mm; box-sizing: border-box; position: relative; display: flex; flex-direction: column; overflow: hidden; }
 
-        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: center; margin-bottom: 3px; gap: 15px; }
+        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: flex-start; margin-bottom: 3px; gap: 15px; }
 
         .logo-block { display: flex; flex-direction: column; width: 200px; height: 60px; overflow: hidden; position: relative; }
         .main-logo { width: 280px; height: 60px; object-fit: cover; object-position: left center; position: absolute; left: 0; top: 0; }
@@ -23,7 +23,7 @@
         .company-name { font-size: 11.5px; font-weight: bold; margin-bottom: 2px; }
 
         .product-meta { font-family: "Times New Roman", Times, serif; font-size: 20px; font-weight: bold; line-height: 1.1; margin-bottom: 4px; margin-top: 2px; text-align: left; }
-        .product-meta div { font-size: 20ppx; font-weight: bold; margin-bottom: 0; }
+        .product-meta div { font-size: 20px; font-weight: bold; margin-bottom: 0; }
 
         .tables-wrapper { display: flex; gap: 4mm; align-items: flex-start; justify-content: space-between; overflow: hidden; flex-shrink: 1; }
         table { border-collapse: collapse; width: 88mm; font-size: 10px; table-layout: fixed; }
@@ -48,11 +48,11 @@
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
         .footer-left div { font-family: "Times New Roman", Times, serif; font-size: 4mm; font-weight: bold; }
         .footer-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; margin-right: 18mm; }
+        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; margin-right: 4mm; }
         .sig-line { font-size: 11px; font-weight: bold; border-top: 1px solid #000; width: 150px; padding-top: 3px; text-align: center; margin-top: 3px; font-family: "Times New Roman", Times, serif; }
         .sig-label { font-size: 10px; text-align: center; font-family: "Times New Roman", Times, serif; }
-        #qrcode { width: 35mm; height: 35mm; flex-shrink: 0; }
-        #qrcode img { width: 35mm !important; height: 35mm !important; display: block; }
+        #qrcode { width: 35mm; height: 35mm; flex-shrink: 0; overflow: hidden; }
+        #qrcode img, #qrcode canvas { width: 35mm !important; height: 35mm !important; display: block; }
         #footer-barcode-svg { width: 150px; height: 40px; display: block; }
 
         .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
@@ -249,6 +249,7 @@ function clearAll(hideModal = true) {
     }
     document.getElementById('net-weight-val').innerText = '';
     document.getElementById('footer-barcode-svg').innerHTML = '';
+    document.getElementById('qrcode').innerHTML = '';
     if (hideModal) {
         document.getElementById('serialInput').value = '';
         document.getElementById('validationInfo').style.display = 'none';
