@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +24,7 @@
         .company-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
 
         .product-meta { font-family: "Times New Roman", Times, serif; font-size: 20px; font-weight: bold; line-height: 1.1; margin-bottom: 4px; margin-top: 2px; text-align: left; }
-        .product-meta div { font-size: 20ppx; font-weight: bold; margin-bottom: 0; }
+        .product-meta div { font-size: 20px; font-weight: bold; margin-bottom: 0; }
 
         .tables-wrapper { display: flex; gap: 4mm; align-items: flex-start; justify-content: space-between; overflow: hidden; flex-shrink: 1; }
         table { border-collapse: collapse; width: 88mm; font-size: 10px; table-layout: fixed; }
@@ -90,7 +89,7 @@
             <img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" class="main-logo" alt="Saatvik Logo">
         </div>
         <div class="hu-center-block">
-            <div class="hu-text" id="hu-val">P NO.:<span id="hu-code" contenteditable="true" oninput="updateHUBarcode()" style="outline:none; min-width:100px; display:inline-block;"></span></div>
+            <div class="hu-text" id="hu-val"><span id="hu-prefix" contenteditable="true" style="outline:none;">P NO</span>.:<span id="hu-code" contenteditable="true" oninput="updateHUBarcode()" style="outline:none; min-width:80px; display:inline-block;"></span></div>
             <svg id="hu-barcode-svg"></svg>
         </div>
         <div class="contact-right">
