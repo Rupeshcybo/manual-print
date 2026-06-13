@@ -18,6 +18,7 @@
 
         .hu-center-block { text-align: left; display: flex; flex-direction: column; align-items: flex-start; font-family: "Times New Roman", Times, serif; padding-top: 5px; margin-left: 4mm; }
         .hu-text { font-size: 26px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif; }
+        #hu-code:empty:before { content: "Paste Pallet Code Here"; color: #aaa; font-weight: normal; font-style: italic; pointer-events: none; font-size: 13px; vertical-align: middle; }
         #hu-barcode-svg { width: 160px; height: 45px; display: block; margin: 2px 0 0 80px; }
 
         .contact-right { text-align: right; font-size: 10px; min-width: 180px; line-height: 1.3; padding-top: 5px; font-family: "Times New Roman", Times, serif; }
@@ -89,7 +90,7 @@
             <img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" class="main-logo" alt="Saatvik Logo">
         </div>
         <div class="hu-center-block">
-            <div class="hu-text" contenteditable="true" id="hu-val" oninput="updateHUBarcode()">P NO.:ManualPrint</div>
+            <div class="hu-text" id="hu-val">P NO.:<span id="hu-code" contenteditable="true" oninput="updateHUBarcode()" style="outline:none; min-width:100px; display:inline-block;"></span></div>
             <svg id="hu-barcode-svg"></svg>
         </div>
         <div class="contact-right">
@@ -161,9 +162,7 @@ function updateQRCode() {
 }
 
 function getHUValue() {
-    const text = getVal('hu-val');
-    const colonIndex = text.indexOf(':');
-    return colonIndex === -1 ? '' : text.substring(colonIndex + 1).trim();
+    return document.getElementById('hu-code').innerText.trim();
 }
 
 function renderBarcode(selector, text, opts) {
