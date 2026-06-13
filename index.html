@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,10 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @page { size: A4; margin: 0; }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7f6; display: flex; justify-content: center; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; }
         .label-page { width: 210mm; height: 297mm; background: white; padding: 8mm 10mm; box-sizing: border-box; position: relative; display: flex; flex-direction: column; overflow: hidden; }
 
-        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: flex-start; margin-bottom: 3px; gap: 15px; }
+        .header-grid { display: grid; grid-template-columns: auto 1fr auto; align-items: center; margin-bottom: 3px; gap: 15px; }
 
         .logo-block { display: flex; flex-direction: column; width: 200px; height: 60px; overflow: hidden; position: relative; }
         .main-logo { width: 280px; height: 60px; object-fit: cover; object-position: left center; position: absolute; left: 0; top: 0; }
@@ -19,26 +20,26 @@
         .hu-text { font-size: 26px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; outline: none; font-family: "Times New Roman", Times, serif; }
         #hu-barcode-svg { width: 160px; height: 45px; display: block; margin: 2px 0 0 80px; }
 
-        .contact-right { text-align: right; font-size: 12px; min-width: 180px; line-height: 1.3; padding-top: 5px; font-family: "Times New Roman", Times, serif; }
-        .company-name { font-size: 11.5px; font-weight: bold; margin-bottom: 2px; }
+        .contact-right { text-align: right; font-size: 10px; min-width: 180px; line-height: 1.3; padding-top: 5px; font-family: "Times New Roman", Times, serif; }
+        .company-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
 
         .product-meta { font-family: "Times New Roman", Times, serif; font-size: 20px; font-weight: bold; line-height: 1.1; margin-bottom: 4px; margin-top: 2px; text-align: left; }
-        .product-meta div { font-size: 20px; font-weight: bold; margin-bottom: 0; }
+        .product-meta div { font-size: 20ppx; font-weight: bold; margin-bottom: 0; }
 
         .tables-wrapper { display: flex; gap: 4mm; align-items: flex-start; justify-content: space-between; overflow: hidden; flex-shrink: 1; }
         table { border-collapse: collapse; width: 88mm; font-size: 10px; table-layout: fixed; }
         th, td { border: 1px solid black; padding: 1px 2px; text-align: center; height: 8mm; vertical-align: bottom; }
         th:nth-child(1), td:nth-child(1) { width: 10mm; }
         th:nth-child(2), td:nth-child(2) { width: 9mm; }
-        th:nth-child(3), td:nth-child(3) { width: 30mm; }
-        th:nth-child(4), td:nth-child(4) { width: 38mm; }
+        th:nth-child(3), td:nth-child(3) { width: 27mm; }
+        th:nth-child(4), td:nth-child(4) { width: 40mm; }
         th { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 2.9mm; white-space: nowrap; }
         tr.hidden { display: none; }
 
         tr.duplicate-serial td { background-color: #fff3e0; border: 2px solid #ef6c00; }
         tr.duplicate-serial td:nth-child(3) { color: #ef6c00; font-weight: bold; }
 
-        td:nth-child(1), td:nth-child(2), td:nth-child(3) { font-family: "Times New Roman", Times, serif; font-size: 11px; padding-bottom: 1px; }
+        td:nth-child(1), td:nth-child(2), td:nth-child(3) { font-family: "Times New Roman", Times, serif; font-size: 10px; padding-bottom: 1px; }
         td:nth-child(4) { font-size: 10px; padding: 2px 0; }
         .serial-input, .watt-cell { font-family: "Times New Roman", Times, serif; font-size: 10px; outline: none; }
         .row-barcode { width: 38mm; height: 6mm; display: block; margin: 0 auto; }
@@ -48,11 +49,11 @@
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
         .footer-left div { font-family: "Times New Roman", Times, serif; font-size: 4mm; font-weight: bold; }
         .footer-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; margin-right: 4mm; }
+        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; }
         .sig-line { font-size: 11px; font-weight: bold; border-top: 1px solid #000; width: 150px; padding-top: 3px; text-align: center; margin-top: 3px; font-family: "Times New Roman", Times, serif; }
         .sig-label { font-size: 10px; text-align: center; font-family: "Times New Roman", Times, serif; }
-        #qrcode { width: 35mm; height: 35mm; flex-shrink: 0; overflow: hidden; }
-        #qrcode img, #qrcode canvas { width: 35mm !important; height: 35mm !important; display: block; }
+        #qrcode { width: 100px; height: 100px; flex-shrink: 0; }
+        #qrcode img { width: 100px !important; height: 100px !important; display: block; }
         #footer-barcode-svg { width: 150px; height: 40px; display: block; }
 
         .ui-panel { position: fixed; right: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
@@ -61,7 +62,7 @@
         textarea { width: 100%; height: 200px; margin-bottom: 10px; }
         .validation-info { font-size: 11px; color: #666; margin-bottom: 8px; padding: 5px; background: #f5f5f5; border-radius: 3px; }
 
-        @media print { .ui-panel, #pasteModal { display: none !important; } body { background: white; } }
+        @media print { .ui-panel, #pasteModal, .print-note { display: none !important; } body { background: white; } }
     </style>
 </head>
 <body>
@@ -93,14 +94,14 @@
         </div>
         <div class="contact-right">
             <div class="company-name">Saatvik Solar Industries Pvt. Ltd.</div>
-            <div><b>Email: info@saatvikgroup.com<br>Web: www.saatvikgroup.com<br>Toll Free - 1800-1801-051</b></div>
+            <div>Email: info@saatvikgroup.com<br>Web: www.saatvikgroup.com<br>Toll Free - 1800-1801-051</div>
         </div>
     </div>
 
     <div class="product-meta">
         <div contenteditable="true" id="modelNo" oninput="updateQRCode()">Model No.: </div>
-        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9910000441</div>
-        <div contenteditable="true" id="itemDes" oninput="updateQRCodeAndWatts()">Item Des: M625-S&W.16B1132TG2G-2382*1134-96-35-1.4</div>
+        <div contenteditable="true" id="itemCode" oninput="updateQRCode()">Item Code: 9901000155</div>
+        <div contenteditable="true" id="itemDes" oninput="updateQRCodeAndWatts()">Item Des: M620-WSS 16B 132THC G2G 2382X35-1.4 S&W</div>
     </div>
 
     <div class="tables-wrapper">
@@ -130,6 +131,10 @@
     </div>
 </div>
 
+<div class="print-note" style="max-width:210mm; margin:10px auto; font-family:'Times New Roman', Times, serif; font-size:14px; font-weight:bold; color:#b30000; border:2px solid #b30000; border-radius:4px; padding:10px 14px; text-align:center; background:#fff5f5;">
+    ⚠ Important: Watt value is automatically picked from the Item Description. Verify the Item Description before printing the label.
+</div>
+
 <script>
 const getVal = id => document.getElementById(id).innerText;
 const extractWatts = text => (text.match(/M(\d+)-/) || ['', '---'])[1];
@@ -149,7 +154,7 @@ function updateQRCode() {
     const huValue = getHUValue();
     const vCard = `BEGIN:VCARD\nVERSION:3.0\nFN:Saatvik Solar - ${modelNo || 'Product'}\nORG:Saatvik Solar Industries Pvt. Ltd.\nTEL:1800-1801-051\nEMAIL:info@saatvikgroup.com\nURL:https://www.saatvikgroup.com\nNOTE:Model: ${modelNo}|Item Code: ${itemCode}|Description: ${itemDes}|HU: ${huValue}\nEND:VCARD`;
     try {
-        new QRCode(qrContainer, { text: vCard, width: 132, height: 132, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M });
+        new QRCode(qrContainer, { text: vCard, width: 100, height: 100, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M });
     } catch (e) {
         console.error('QR Code error:', e);
     }
@@ -183,6 +188,7 @@ function updateHUBarcode() {
     renderBarcode("#footer-barcode-svg", barcodeValue, { format: "CODE128", width: 1.5, height: 40 });
 }
 
+
 function processSerials() {
     const input = document.getElementById('serialInput').value;
     const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
@@ -213,7 +219,7 @@ function processSerials() {
         if (bcTarget) {
             bcTarget.innerHTML = `<svg id="bc-${rowNum}" class="row-barcode"></svg>`;
             try {
-                JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.7, height: 30, displayValue: false, margin: 0 });
+                JsBarcode(`#bc-${rowNum}`, serial, { format: "CODE128", width: 1.4, height: 24, displayValue: false, margin: 0 });
             } catch (e) { console.error('Row barcode error:', rowNum, e); }
         }
     });
@@ -249,7 +255,6 @@ function clearAll(hideModal = true) {
     }
     document.getElementById('net-weight-val').innerText = '';
     document.getElementById('footer-barcode-svg').innerHTML = '';
-    document.getElementById('qrcode').innerHTML = '';
     if (hideModal) {
         document.getElementById('serialInput').value = '';
         document.getElementById('validationInfo').style.display = 'none';
