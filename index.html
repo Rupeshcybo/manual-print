@@ -49,7 +49,7 @@
         .footer-left { display: flex; flex-direction: column; gap: 3px; }
         .footer-left div { font-family: "Times New Roman", Times, serif; font-size: 4mm; font-weight: bold; }
         .footer-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; margin-right: 4mm; }
+        .barcode-qr-container { display: flex; align-items: flex-end; gap: 2.2mm; margin-bottom: 4mm; margin-right: 2mm; }
         .sig-line { font-size: 11px; font-weight: bold; border-top: 1px solid #000; width: 150px; padding-top: 3px; text-align: center; margin-top: 3px; font-family: "Times New Roman", Times, serif; }
         .sig-label { font-size: 10px; text-align: center; font-family: "Times New Roman", Times, serif; }
         #qrcode { width: 130px; height: 130px; flex-shrink: 0; }
@@ -63,14 +63,24 @@
         .validation-info { font-size: 11px; color: #666; margin-bottom: 8px; padding: 5px; background: #f5f5f5; border-radius: 3px; }
 
         @media print { .ui-panel, #pasteModal, .print-note { display: none !important; } body { background: white; } }
-    </style>
+    
+.watermark{
+position:absolute;top:45%;left:50%;
+transform:translate(-50%,-50%) rotate(-25deg);
+font-size:80px;font-weight:bold;
+font-family:"Times New Roman", Times, serif;
+opacity:.04;pointer-events:none;white-space:nowrap;
+}
+.dark-btn{background:#2c3e50!important}
+.generated-info{font-size:12px;font-weight:bold}
+</style>
 </head>
 <body>
 
 <div class="ui-panel">
-    <button onclick="document.getElementById('pasteModal').style.display='block'">PASTE SERIALS</button>
-    <button onclick="clearAll()" style="background:#e67e22">CLEAR ALL</button>
-    <button onclick="window.print()" style="background:#27ae60">PRINT LABEL</button>
+    <button onclick="document.getElementById('pasteModal').style.display='block'">📋 PASTE SERIALS</button>
+    <button onclick="clearAll()" style="background:#e67e22">🗑 CLEAR</button>
+    <button onclick="window.print()" style="background:#27ae60">🖨 PRINT</button>
 </div>
 
 <div id="pasteModal">
@@ -83,7 +93,7 @@
     </div>
 </div>
 
-<div class="label-page">
+<div class="label-page"><div class="watermark">SAATVIK SOLAR</div>
     <div class="header-grid">
         <div class="logo-block">
             <img src="https://saatvikgroup.com/wp-content/uploads/2025/06/Saatvik_Solar_Logo-1-scaled.png" class="main-logo" alt="Saatvik Logo">
@@ -113,7 +123,7 @@
         <div class="footer-align-row">
             <div class="footer-left">
                 <div>Net Weight: <span id="net-weight-val" style="font-weight:bold;"></span></div>
-                <div>Gross Weight: <span contenteditable="true" style="font-weight:bold;">---</span></div>
+                <div>Gross Weight: <span contenteditable="true" style="font-weight:bold;">---</span></div><div class="generated-info" id="generatedInfo" style="margin-top:6px;font-size:12px;font-weight:bold;"></div>
             </div>
             <div class="footer-center">
                 <div class="sig-line">Quality Incharge</div>
@@ -137,7 +147,10 @@
 
 <script>
 const getVal = id => document.getElementById(id).innerText;
-const extractWatts = text => (text.match(/M(\d+)-/) || ['', '---'])[1];
+const extractWatts = text => {
+    const m = text.match(/M(\d+)/i);
+    return m ? m[1] : '---';
+};
 
 function updateQRCodeAndWatts() {
     const watts = extractWatts(getVal('itemDes'));
@@ -154,7 +167,9 @@ function updateQRCode() {
     const huValue = getHUValue();
     const vCard = `BEGIN:VCARD\nVERSION:3.0\nFN:Saatvik Solar - ${modelNo || 'Product'}\nORG:Saatvik Solar Industries Pvt. Ltd.\nTEL:1800-1801-051\nEMAIL:info@saatvikgroup.com\nURL:https://www.saatvikgroup.com\nNOTE:Model: ${modelNo}|Item Code: ${itemCode}|Description: ${itemDes}|HU: ${huValue}\nEND:VCARD`;
     try {
-        new QRCode(qrContainer, { text: vCard, width: 130, height: 130, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M });
+        if(typeof QRCode !== 'undefined'){
+            new QRCode(qrContainer, { text: vCard, width: 130, height: 130, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.M });
+        }
     } catch (e) {
         console.error('QR Code error:', e);
     }
@@ -187,10 +202,16 @@ function updateHUBarcode() {
 }
 
 
+
+function updateStatus(){
+ document.getElementById('generatedInfo').innerText='Generated: '+new Date().toLocaleString();
+}
+
 function processSerials() {
     const input = document.getElementById('serialInput').value;
     const serials = input.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
     if (serials.length === 0) { alert('Please enter at least one serial number'); return; }
+    if(serials.length > 36){ alert(`Only first 36 serials will be used. ${serials.length - 36} ignored.`); }
     clearAll(false);
     const watts = extractWatts(getVal('itemDes'));
     const qty = Math.min(serials.length, 36);
@@ -235,7 +256,7 @@ function processSerials() {
     } else {
         validationInfo.style.display = 'none';
     }
-    document.getElementById('pasteModal').style.display = 'none';
+    updateStatus();document.getElementById('pasteModal').style.display = 'none';
 }
 
 function clearAll(hideModal = true) {
@@ -272,7 +293,29 @@ function generateGrid() {
     }
 }
 
-generateGrid();
+
+document.addEventListener('input', function(e){
+    if(e.target.classList.contains('serial-input')){
+        const row = e.target.closest('tr');
+        const bc = row.querySelector('.bc-target');
+        const serial = e.target.innerText.trim();
+        if(serial){
+            bc.innerHTML = '<svg class="row-barcode"></svg>';
+            try{
+                JsBarcode(
+                    bc.querySelector('svg'),
+                    serial,
+                    {format:'CODE128',width:1.4,height:24,displayValue:false,margin:0}
+                );
+            }catch(err){}
+        }else{
+            bc.innerHTML='';
+        }
+    }
+});
+
+
+generateGrid();updateStatus();
 updateHUBarcode();
 updateQRCode();
 </script>
