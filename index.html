@@ -155,6 +155,9 @@ const extractWatts = text => {
 
 function updateQRCodeAndWatts() {
     const watts = extractWatts(getVal('itemDes'));
+    if (watts !== '---') {
+        document.getElementById('modelNo').innerText = 'Model No.: SGE' + watts + '-132TGG';
+    }
     document.querySelectorAll('tr:not(.hidden) .watt-cell').forEach(cell => cell.innerText = watts);
     updateQRCode();
 }
